@@ -9,3 +9,7 @@
 - Added unity metadata files.
 ### Updated
 - Updated installation instructions.
+
+## [1.0.2] - 2024-09-18
+### Added
+- Added plugin dependencies.
