@@ -3,14 +3,13 @@ using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
-public class InstallDependencies
+public class InstallAndroidDependencies
 {
     private static AddRequest Request;
 
-    [InitializeOnLoadMethod]
-    private static void AddSharpZipLibPackage()
+    public static void InstallDependencies()
     {
-        Debug.Log("AddSharpZipLibPackage method called.");
+        Debug.Log("InstallDependencies method called.");
 
         // Check if the package is already installed
         if (!IsPackageInstalled("com.unity.sharp-zip-lib"))
@@ -22,13 +21,6 @@ public class InstallDependencies
         {
             Debug.Log("Package com.unity.sharp-zip-lib is already installed.");
         }
-    }
-
-    [MenuItem("Tools/Install SharpZipLib Package")]
-    public static void ManualAddSharpZipLibPackage()
-    {
-        Debug.Log("ManualAddSharpZipLibPackage method called.");
-        AddSharpZipLibPackage();
     }
 
     private static bool IsPackageInstalled(string packageName)
