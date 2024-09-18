@@ -5,76 +5,37 @@ using UnityEngine;
 
 public class InstallDependencies
 {
-    private static AddRequest addRequest;
-    private const string dependencyName = "com.unity.sharp-zip-lib";
-    private const string dependencyVersion = "1.3.8";
+    private static AddRequest Request;
 
     [InitializeOnLoadMethod]
-    private static void InstallDependencyOnLoad()
+    private static void AddSharpZipLibPackage()
     {
-        // Check if the dependency is already installed
-        ListRequest listRequest = Client.List();
-        EditorApplication.update += () => CheckDependency(listRequest);
-    }
+        Debug.Log("AddSharpZipLibPackage method called.");
 
-    private static void CheckDependency(ListRequest listRequest)
-    {
-        if (listRequest.IsCompleted)
+        // Check if the package is already installed
+        if (!IsPackageInstalled("com.unity.sharp-zip-lib"))
         {
-            if (listRequest.Status == StatusCode.Success)
-            {
-                bool isDependencyInstalled = false;
-
-                foreach (var package in listRequest.Result)
-                {
-                    if (package.name == dependencyName && package.version == dependencyVersion)
-                    {
-                        isDependencyInstalled = true;
-                        break;
-                    }
-                }
-
-                if (!isDependencyInstalled)
-                {
-                    Debug.Log("BrightSdkUpdater DepencencyInstaller: Dependency not installed, installing...");
-                    AddDependency();
-                }
-                else
-                {
-                    Debug.Log("BrightSdkUpdater DepencencyInstaller: Dependency already installed.");
-                }
-            }
-            else
-            {
-                Debug.LogError("BrightSdkUpdater DepencencyInstaller: Error fetching package list: " + listRequest.Error.message);
-            }
-
-            // Remove the update callback
-            EditorApplication.update -= () => CheckDependency(listRequest);
+            Debug.Log("Adding com.unity.sharp-zip-lib package...");
+            Request = Client.Add("com.unity.sharp-zip-lib@1.3.8");
+        }
+        else
+        {
+            Debug.Log("Package com.unity.sharp-zip-lib is already installed.");
         }
     }
 
-    private static void AddDependency()
+    [MenuItem("Tools/Install SharpZipLib Package")]
+    public static void ManualAddSharpZipLibPackage()
     {
-        addRequest = Client.Add(dependencyName + "@" + dependencyVersion);
-        EditorApplication.update += AddDependencyProgress;
+        Debug.Log("ManualAddSharpZipLibPackage method called.");
+        AddSharpZipLibPackage();
     }
 
-    private static void AddDependencyProgress()
+    private static bool IsPackageInstalled(string packageName)
     {
-        if (addRequest.IsCompleted)
-        {
-            if (addRequest.Status == StatusCode.Success)
-            {
-                Debug.Log("BrightSdkUpdater DepencencyInstaller: Dependency installed successfully.");
-            }
-            else
-            {
-                Debug.LogError("BrightSdkUpdater DepencencyInstaller: Error installing dependency: " + addRequest.Error.message);
-            }
-
-            // Remove the update callback
-            EditorApplication.update -= AddDependencyProgress;
-        }
+        // Placeholder implementation
+        Debug.Log($"Checking if package {packageName} is installed.");
+        // Implement the actual check here
+        return false;
     }
 }
