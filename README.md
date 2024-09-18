@@ -30,8 +30,6 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 4. Enter `git@github.com:vladislavs-luminati/bright-sdk-unity-updater.git`.
 5. Click `Add`.
 
-This will add your package to the Unity project, and the `BrightSdkPreBuildProcessor` script will be available for use.
-
 ## Usage
 
 The plugin runs automatically during the build process for Android projects. 
@@ -46,7 +44,7 @@ The plugin runs automatically during the build process for Android projects.
 
 ## Customization
 
-You can customize the SDK version by modifying the `sdkVersion` variable in the `BrightSdkPreBuildProcessor` class. The plugin currently defaults to the latest version.
+You can customize the SDK version by modifying the `sdkVersion` variable in the `packages/BrightSdkPreBuildProcessor/Editor/UpdateBrightSdk.cs`. The plugin currently defaults to the latest version.
 
 ## Debugging
 
@@ -54,7 +52,7 @@ The plugin provides debug logs in the Unity Console, allowing you to track the p
 
 ## Requirements
 
-- Unity 2019.4 or later
+- Unity 2019.4 or later (other versions can also be supported, but were not tested, feel free to report)
 - Android Build Support installed in Unity
 
 ## License
