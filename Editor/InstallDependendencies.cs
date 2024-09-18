@@ -36,17 +36,17 @@ public class InstallDependencies
 
                 if (!isDependencyInstalled)
                 {
-                    Debug.Log("YourPluginInstaller: Dependency not installed, installing...");
+                    Debug.Log("BrightSdkUpdater DepencencyInstaller: Dependency not installed, installing...");
                     AddDependency();
                 }
                 else
                 {
-                    Debug.Log("YourPluginInstaller: Dependency already installed.");
+                    Debug.Log("BrightSdkUpdater DepencencyInstaller: Dependency already installed.");
                 }
             }
             else
             {
-                Debug.LogError("YourPluginInstaller: Error fetching package list: " + listRequest.Error.message);
+                Debug.LogError("BrightSdkUpdater DepencencyInstaller: Error fetching package list: " + listRequest.Error.message);
             }
 
             // Remove the update callback
@@ -66,11 +66,11 @@ public class InstallDependencies
         {
             if (addRequest.Status == StatusCode.Success)
             {
-                Debug.Log("YourPluginInstaller: Dependency installed successfully.");
+                Debug.Log("BrightSdkUpdater DepencencyInstaller: Dependency installed successfully.");
             }
             else
             {
-                Debug.LogError("YourPluginInstaller: Error installing dependency: " + addRequest.Error.message);
+                Debug.LogError("BrightSdkUpdater DepencencyInstaller: Error installing dependency: " + addRequest.Error.message);
             }
 
             // Remove the update callback
