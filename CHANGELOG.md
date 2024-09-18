@@ -13,3 +13,7 @@
 ## [1.0.2] - 2024-09-18
 ### Added
 - Added plugin dependencies.
+
+## [1.0.3] - 2024-09-18
+### Updated
+- Auto install dependencies.
