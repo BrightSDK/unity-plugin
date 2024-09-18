@@ -21,3 +21,7 @@
 ## [1.0.4] - 2024-09-18
 ### Added
 - Added debug logging.
+
+## [1.0.5] - 2024-09-18
+### Added
+- Added missing meta.
