@@ -17,3 +17,7 @@
 ## [1.0.3] - 2024-09-18
 ### Updated
 - Auto install dependencies.
+
+## [1.0.4] - 2024-09-18
+### Added
+- Added debug logging.
