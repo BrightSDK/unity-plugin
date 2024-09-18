@@ -25,3 +25,7 @@
 ## [1.0.5] - 2024-09-18
 ### Added
 - Added missing meta.
+
+## [1.0.6] - 2024-09-18
+### Added
+- Fixed meta.

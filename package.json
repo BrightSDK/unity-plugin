@@ -1,7 +1,7 @@
 {
     "name": "com.brightdata.brightsdkunityupdater",
-    "version": "1.0.5",
-    "displayName": "Bright SDK PreBuild Processor",
+    "version": "1.0.6",
+    "displayName": "BrightSdkPreBuildProcessor",
     "description": "A Unity Editor script to update the Bright SDK before building.",
     "unity": "2019.4",
     "author": {
