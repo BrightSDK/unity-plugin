@@ -28,7 +28,6 @@ public class BrightSdkPreBuildProcessor : IPreprocessBuildWithReport
         if (report.summary.platform == BuildTarget.Android)
         {
             Debug.Log("BrightSdkPreBuildProcessor: Platform is Android, updating Bright SDK");
-            InstallDependencies.InstallAndroidDependencies();
             UpdateBrightSdk();
         }
         else
