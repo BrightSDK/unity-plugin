@@ -37,3 +37,7 @@
 ## [1.0.8] - 2024-09-18
 ### Removed
 - Cleanup.
+
+## [1.0.9] - 2024-09-18
+### Updated
+- Updated README.

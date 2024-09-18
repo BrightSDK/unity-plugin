@@ -11,7 +11,18 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 - **Clean Up:** Removes obsolete SDK files to prevent conflicts and ensure a clean build environment.
 - **Extraction:** Extracts the Bright SDK from a compressed file and places it in the appropriate directory.
 
+
 ## Installation
+
+### Install depencendies
+
+1. Open Unity and go to `Window > Package Manager`.
+2. Click the `+` button in the top left corner.
+3. Select `Add package by name...`.
+4. Enter `com.unity.sharp-zip-lib` as package name.
+5. Click `Add`.
+
+### Add plugin to your project
 
 1. Open Unity and go to `Window > Package Manager`.
 2. Click the `+` button in the top left corner.
