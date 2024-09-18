@@ -13,15 +13,13 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 
 ## Installation
 
-1. **Download the Plugin:** Clone or download this repository into your Unity project's `Assets/Plugins` directory.
-   
-   ```bash
-   git clone https://github.com/vladislavs-luminati/bright-sdk-unity.git Assets/Plugins/BrightSdkUnityUpdater
-   ```
+1. Open Unity and go to `Window > Package Manager`.
+2. Click the `+` button in the top left corner.
+3. Select `Add package from git URL...`.
+4. Enter `git@github.com:vladislavs-luminati/bright-sdk-unity-updater.git`.
+5. Click `Add`.
 
-2. **Open Unity:** Launch Unity and open your project.
-
-3. **Build Settings:** Ensure that your project is set up for Android build. The plugin will automatically detect the build target when you start building.
+This will add your package to the Unity project, and the `BrightSdkPreBuildProcessor` script will be available for use.
 
 ## Usage
 
