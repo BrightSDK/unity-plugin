@@ -5,30 +5,76 @@ using UnityEngine;
 
 public class InstallDependencies
 {
-    private static AddRequest Request;
+    private static AddRequest addRequest;
+    private const string dependencyName = "com.unity.sharp-zip-lib";
+    private const string dependencyVersion = "1.3.8";
 
     [InitializeOnLoadMethod]
-    private static void AddSharpZipLibPackage()
+    private static void InstallDependencyOnLoad()
     {
-        Debug.Log("AddSharpZipLibPackage method called.");
+        // Check if the dependency is already installed
+        ListRequest listRequest = Client.List();
+        EditorApplication.update += () => CheckDependency(listRequest);
+    }
 
-        // Check if the package is already installed
-        if (!IsPackageInstalled("com.unity.sharp-zip-lib"))
+    private static void CheckDependency(ListRequest listRequest)
+    {
+        if (listRequest.IsCompleted)
         {
-            Debug.Log("Adding com.unity.sharp-zip-lib package...");
-            Request = Client.Add("com.unity.sharp-zip-lib@1.3.8");
-        }
-        else
-        {
-            Debug.Log("Package com.unity.sharp-zip-lib is already installed.");
+            if (listRequest.Status == StatusCode.Success)
+            {
+                bool isDependencyInstalled = false;
+
+                foreach (var package in listRequest.Result)
+                {
+                    if (package.name == dependencyName && package.version == dependencyVersion)
+                    {
+                        isDependencyInstalled = true;
+                        break;
+                    }
+                }
+
+                if (!isDependencyInstalled)
+                {
+                    Debug.Log("YourPluginInstaller: Dependency not installed, installing...");
+                    AddDependency();
+                }
+                else
+                {
+                    Debug.Log("YourPluginInstaller: Dependency already installed.");
+                }
+            }
+            else
+            {
+                Debug.LogError("YourPluginInstaller: Error fetching package list: " + listRequest.Error.message);
+            }
+
+            // Remove the update callback
+            EditorApplication.update -= () => CheckDependency(listRequest);
         }
     }
 
-    private static bool IsPackageInstalled(string packageName)
+    private static void AddDependency()
     {
-        // Placeholder implementation
-        Debug.Log($"Checking if package {packageName} is installed.");
-        // Implement the actual check here
-        return false;
+        addRequest = Client.Add(dependencyName + "@" + dependencyVersion);
+        EditorApplication.update += AddDependencyProgress;
+    }
+
+    private static void AddDependencyProgress()
+    {
+        if (addRequest.IsCompleted)
+        {
+            if (addRequest.Status == StatusCode.Success)
+            {
+                Debug.Log("YourPluginInstaller: Dependency installed successfully.");
+            }
+            else
+            {
+                Debug.LogError("YourPluginInstaller: Error installing dependency: " + addRequest.Error.message);
+            }
+
+            // Remove the update callback
+            EditorApplication.update -= AddDependencyProgress;
+        }
     }
 }
