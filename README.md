@@ -27,7 +27,7 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 1. Open Unity and go to `Window > Package Manager`.
 2. Click the `+` button in the top left corner.
 3. Select `Add package from git URL...`.
-4. Enter `git@github.com:vladislavs-luminati/bright-sdk-unity-updater.git`.
+4. Enter `https://github.com/vladislavs-luminati/bright-sdk-unity-updater.git`.
 5. Click `Add`.
 
 ## Usage
