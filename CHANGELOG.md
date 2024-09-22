@@ -41,3 +41,9 @@
 ## [1.0.9] - 2024-09-18
 ### Updated
 - Updated README.
+
+## [1.0.10] - 2024-09-22
+### Updated
+- Fixed versions URL.
+- Fixed cache directory auto-creation.
+- Updated README to use https URL.
