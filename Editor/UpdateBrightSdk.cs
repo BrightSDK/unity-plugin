@@ -17,6 +17,8 @@ public class BrightSdkPreBuildProcessor : IPreprocessBuildWithReport
     private readonly string sdkDir = "Assets/Plugins/Android";
     private readonly string cacheDir = "Library/BrightSdkCache";
     private readonly string sdkUrl = "https://cdn.bright-sdk.com/static/";
+    private readonly string sdkVersionsUrl = "https://bright-sdk.com/sdk_api/sdk/versions";
+
     private readonly Dictionary<string, string> sdkVersions = new();
 
     public int callbackOrder => 0;
@@ -59,27 +61,30 @@ public class BrightSdkPreBuildProcessor : IPreprocessBuildWithReport
     {
         // Fetch the latest SDK versions
         Debug.Log("BrightSdkPreBuildProcessor: Fetching Bright SDK versions");
-        string versionsUrl = sdkUrl + "sdk_versions.json";
-        string versionsFile = Path.Combine(cacheDir, "sdk_versions.json");
+        string sdkVersionsFile = Path.Combine(cacheDir, "sdk_versions.json");
 
-        if (File.Exists(versionsFile))
+        if (!Directory.Exists(cacheDir))
         {
-            FileInfo fileInfo = new FileInfo(versionsFile);
+            Directory.CreateDirectory(cacheDir);
+        }
+        else if (File.Exists(sdkVersionsFile))
+        {
+            FileInfo fileInfo = new FileInfo(sdkVersionsFile);
             if (fileInfo.LastWriteTime < System.DateTime.Now.AddDays(-1))
             {
-                File.Delete(versionsFile);
+                File.Delete(sdkVersionsFile);
             }
         }
 
-        if (!File.Exists(versionsFile))
+        if (!File.Exists(sdkVersionsFile))
         {
             using (WebClient client = new WebClient())
             {
-                client.DownloadFile(versionsUrl, versionsFile);
+                client.DownloadFile(sdkVersionsUrl, sdkVersionsFile);
             }
         }
 
-        string jsonContent = File.ReadAllText(versionsFile);
+        string jsonContent = File.ReadAllText(sdkVersionsFile);
         Debug.Log("SDK versions json content: " + jsonContent);
 
         SdkVersions sdkVersionsData = JsonUtility.FromJson<SdkVersions>(jsonContent);
