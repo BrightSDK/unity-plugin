@@ -116,7 +116,11 @@ public class BrightSdkPreBuildProcessor : IPreprocessBuildWithReport
         string targzName = "bright_sdk_android-" + sdkVersion + ".tar.gz";
         string targzFile = Path.Combine(cacheDir, targzName);
 
-        if (!File.Exists(targzFile))
+        if (!Directory.Exists(cacheDir))
+        {
+            Directory.CreateDirectory(cacheDir);
+        }
+        else if (!File.Exists(targzFile))
         {
             using (WebClient client = new WebClient())
             {
