@@ -16,7 +16,7 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 
 ### Install [SharpZipLib](https://docs.unity3d.com/Packages/com.unity.sharp-zip-lib@1.3/manual/Installation.html)
 
-1. Open Unity and go to `Window > Package Manager`.
+1. Select `Window > Package Manager`.
 2. Click the `+` button in the top left corner.
 3. Select `Add package by name...`.
 4. Enter `com.unity.sharp-zip-lib` as package name.
@@ -24,11 +24,16 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 
 ### Add plugin to your project
 
-1. Open Unity and go to `Window > Package Manager`.
+1. Select `Window > Package Manager`.
 2. Click the `+` button in the top left corner.
 3. Select `Add package from git URL...`.
 4. Enter `https://github.com/vladislavs-luminati/bright-sdk-unity-updater.git`.
 5. Click `Add`.
+
+### Restart Unity
+
+1. Select `Unity -> Quit`
+2. Open Unity project again from Unity Hub
 
 ## Usage
 
