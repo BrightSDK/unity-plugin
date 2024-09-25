@@ -51,3 +51,8 @@
 ## [1.0.11] - 2024-09-25
 ### Updated
 - Removed new C# feature for backward-compatibility.
+
+## [1.0.12] - 2024-09-25
+### Added
+- Added BrightSdkUpdater.asmdef.
+- Added package-lock.json to ignore.
