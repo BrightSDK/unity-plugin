@@ -19,7 +19,7 @@ public class BrightSdkPreBuildProcessor : IPreprocessBuildWithReport
     private readonly string sdkUrl = "https://cdn.bright-sdk.com/static/";
     private readonly string sdkVersionsUrl = "https://bright-sdk.com/sdk_api/sdk/versions";
 
-    private readonly Dictionary<string, string> sdkVersions = new();
+    private readonly Dictionary<string, string> sdkVersions = new Dictionary<string, string>();
 
     public int callbackOrder => 0;
 

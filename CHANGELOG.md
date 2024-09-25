@@ -47,3 +47,7 @@
 - Fixed versions URL.
 - Fixed cache directory auto-creation.
 - Updated README to use https URL.
+
+## [1.0.11] - 2024-09-25
+### Updated
+- Removed new C# feature for backward-compatibility.
