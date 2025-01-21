@@ -3,7 +3,7 @@
 # Add SharpZipLib package to manifest.json if it doesn't exist
 MANIFEST_FILE="Packages/manifest.json"
 PACKAGE_NAME="com.unity.sharp-zip-lib"
-PACKAGE_VERSION="1.2.0"
+PACKAGE_VERSION="1.3.9"
 
 if [ ! -f "$MANIFEST_FILE" ]; then
   echo "manifest.json file not found!"
