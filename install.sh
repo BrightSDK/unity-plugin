@@ -33,4 +33,4 @@ fi
 echo "Cleaning up..."
 rm -rf $TEMP_DIR
 
-echo "Bright SDK package downloaded and installed successfully."
+echo "Bright SDK Updater package downloaded and installed successfully."
