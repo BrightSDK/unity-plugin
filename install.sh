@@ -5,6 +5,7 @@ PACKAGE_URL="https://github.com/BrightSDK/unity-plugin/archive/refs/heads/main.z
 TEMP_DIR="Temp/BrightSDKPackage"
 PACKAGE_DIR="Assets/BrightSDKPackage"
 TARGET_EDITOR_DIR="Assets/Editor/BrightSDK"
+TARGET_SCRIPTS_DIR="Assets/Scripts/BrightSDK"
 
 # Create temporary directory
 mkdir -p $TEMP_DIR
@@ -27,6 +28,18 @@ if [ -d "$SOURCE_EDITOR_DIR" ]; then
     cp -r $SOURCE_EDITOR_DIR/* $TARGET_EDITOR_DIR/
 else
     echo "Editor folder not found in the package."
+fi
+
+# Copy the Scripts folder to Assets
+SOURCE_SCRIPTS_DIR="$TEMP_DIR/unity-plugin-main/Scripts"
+
+if [ -d "$SOURCE_SCRIPTS_DIR" ]; then
+    echo "Copying Scripts folder to Assets..."
+    rm -rf $TARGET_SCRIPTS_DIR
+    mkdir -p $TARGET_SCRIPTS_DIR
+    cp -r $SOURCE_SCRIPTS_DIR/* $TARGET_SCRIPTS_DIR/
+else
+    echo "Scripts folder not found in the package."
 fi
 
 # Clean up
