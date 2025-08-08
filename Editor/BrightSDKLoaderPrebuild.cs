@@ -5,7 +5,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class BrightSDKPrebuildLoader : IPreprocessBuildWithReport
+public class BrightSDKLoaderPrebuild : IPreprocessBuildWithReport
 {
     private readonly Dictionary<BuildTarget, BrightSDKExtractor> extractors = new Dictionary<BuildTarget, BrightSDKExtractor>();
     private readonly Dictionary<BuildTarget, BrightSDKArchiveDownloader> archiveDownloaders = new Dictionary<BuildTarget, BrightSDKArchiveDownloader>();
@@ -13,7 +13,7 @@ public class BrightSDKPrebuildLoader : IPreprocessBuildWithReport
 
     public int callbackOrder => 0;
 
-    public BrightSDKPrebuildLoader()
+    public BrightSDKLoaderPrebuild()
     {
         sdkVersions = new BrightSDKVersions();
 
@@ -26,16 +26,16 @@ public class BrightSDKPrebuildLoader : IPreprocessBuildWithReport
 
     public void OnPreprocessBuild(BuildReport report)
     {
-        Debug.Log("BrightSdkPreBuildProcessor: OnPreprocessBuild called");
+        Debug.Log("BrightSDKLoaderPrebuild: OnPreprocessBuild called");
         BuildTarget platform = report.summary.platform;
         if (isPlatformSupported(platform))
         {
-            Debug.Log("BrightSdkPreBuildProcessor: Platform is " + platform + ", updating Bright SDK");
+            Debug.Log("BrightSDKLoaderPrebuild: Platform is " + platform + ", updating Bright SDK");
             UpdateBrightSdk(platform);
         }
         else
         {
-            Debug.Log("BrightSdkPreBuildProcessor: Platform " + platform + " is not supported, skipping Bright SDK update");
+            Debug.Log("BrightSDKLoaderPrebuild: Platform " + platform + " is not supported, skipping Bright SDK update");
         }
     }
 
@@ -46,7 +46,7 @@ public class BrightSDKPrebuildLoader : IPreprocessBuildWithReport
 
     private void UpdateBrightSdk(BuildTarget platform)
     {
-        Debug.Log("BrightSdkPreBuildProcessor: Starting Bright SDK update");
+        Debug.Log("BrightSDKLoaderPrebuild: Starting Bright SDK update");
         sdkVersions.load();
 
         if (isPlatformSupported(platform) && sdkVersions.LastVersion(platform) != null)
@@ -56,6 +56,6 @@ public class BrightSDKPrebuildLoader : IPreprocessBuildWithReport
             extractors[platform].Extract(archiveFile);
         }
 
-        Debug.Log("BrightSdkPreBuildProcessor: Bright SDK updated successfully");
+        Debug.Log("BrightSDKLoaderPrebuild: Bright SDK updated successfully");
     }
 }

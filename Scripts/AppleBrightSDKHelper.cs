@@ -5,13 +5,13 @@ using System.Collections;
 using System.IO;
 using System.Runtime.InteropServices;
 using AOT;
-#if UNITY_IOS || UNITY_TVOS
+
+#if APPLE_BRIGHT_SDK && (UNITY_IOS || UNITY_TVOS)
 using Brdsdk;
 #endif
-
 public class AppleBrightSDKHelper : BrightSDKHelper
 {
-#if UNITY_IOS || UNITY_TVOS
+#if APPLE_BRIGHT_SDK && (UNITY_IOS || UNITY_TVOS)
     void Awake()
     {
         BrdsdkBridge.set_on_choice_change_callback(choiceChanged);
