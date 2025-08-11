@@ -1,7 +1,12 @@
 #!/bin/bash
 
+BRANCH=main
+if [ ! -z "$1" ]; then
+    BRANCH=$1
+fi
+
 # URL to download the ZIP file
-PACKAGE_URL="https://github.com/BrightSDK/unity-plugin/archive/refs/heads/main.zip"
+PACKAGE_URL="https://github.com/BrightSDK/unity-plugin/archive/refs/heads/$BRANCH.zip"
 TEMP_DIR="Temp/BrightSDKPackage"
 PACKAGE_DIR="Assets/BrightSDKPackage"
 TARGET_EDITOR_DIR="Assets/Editor/BrightSDK"
@@ -19,7 +24,7 @@ echo "Extracting Bright SDK package..."
 unzip -q $TEMP_DIR/package.zip -d $TEMP_DIR
 
 # Copy the Editor folder to Assets
-SOURCE_EDITOR_DIR="$TEMP_DIR/unity-plugin-main/Editor"
+SOURCE_EDITOR_DIR="$TEMP_DIR/unity-plugin-$BRANCH/Editor"
 
 if [ -d "$SOURCE_EDITOR_DIR" ]; then
     echo "Copying Editor folder to Assets..."
@@ -31,7 +36,7 @@ else
 fi
 
 # Copy the Scripts folder to Assets
-SOURCE_SCRIPTS_DIR="$TEMP_DIR/unity-plugin-main/Scripts"
+SOURCE_SCRIPTS_DIR="$TEMP_DIR/unity-plugin-$BRANCH/Scripts"
 
 if [ -d "$SOURCE_SCRIPTS_DIR" ]; then
     echo "Copying Scripts folder to Assets..."
