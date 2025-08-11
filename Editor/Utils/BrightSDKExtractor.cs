@@ -145,7 +145,15 @@ class AppleBrightSDKDownloader : BrightSDKExtractor
         if (Directory.Exists(destDir))
             Directory.Delete(destDir, true);
 
-        string srcDir = Path.Combine(extractDir, "unity_editor_sample_app/Assets/BrightDataSDK");
+        string srcDir = Path.Combine(extractDir, "unity_plugin/BrightDataSDK");
+        if (!Directory.Exists(srcDir))
+            srcDir = Path.Combine(extractDir, "unity_editor_sample_app/Assets/BrightDataSDK");
+        string asmDefFile = Path.Combine(srcDir, "AppleBrightSDK.asmdef");
+        if (File.Exists(asmDefFile))
+            File.Delete(asmDefFile);
+        asmDefFile = Path.Combine(srcDir, "AppleBrightSDK.asmdef.meta");
+        if (File.Exists(asmDefFile))
+            File.Delete(asmDefFile);
         BrightSDKDirectory.CopyDirectory(srcDir, destDir, true);
         setSettingsOfFramework(destDir);
         AssetDatabase.Refresh();
