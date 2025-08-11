@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 
 [Serializable]
-class SdkVersions
+class SDKVersions
 {
     public string android;
     public string ios;
@@ -15,13 +15,13 @@ class SdkVersions
 class BrightSDKVersions
 {
     private readonly string sdkVersionsUrl = "https://bright-sdk.com/sdk_api/sdk/versions";
-    private SdkVersions lastVersions;
+    private SDKVersions lastVersions;
 
     public void load()
     {
         Debug.Log("Fetching Bright SDK versions");
         string jsonContent = getVersionsContent();
-        lastVersions = JsonUtility.FromJson<SdkVersions>(jsonContent);
+        lastVersions = JsonUtility.FromJson<SDKVersions>(jsonContent);
         Debug.Log("Loaded SDK versions: " + lastVersions);
     }
 
