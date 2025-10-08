@@ -57,7 +57,7 @@ The plugin provides debug logs in the Unity Console, allowing you to track the p
 
 ## Requirements
 
-- Unity 2019.4 or later (other versions can also be supported, but were not tested, feel free to report)
+- Unity 2022.3 or later (other versions can also be supported, but were not tested, feel free to report)
 - Android Build Support installed in Unity
 
 ## License
