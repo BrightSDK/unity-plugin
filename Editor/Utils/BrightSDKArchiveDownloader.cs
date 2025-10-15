@@ -77,10 +77,10 @@ class AndroidSDKArchiveDownloader : BrightSDKArchiveDownloader
     }
 }
 
-class AppleSDKArchiveDownloader : BrightSDKArchiveDownloader
+class AppleMobileSDKArchiveDownloader : BrightSDKArchiveDownloader
 {
     // null for latest
-    public override string VersionsPlatformKey => "apple";
+    public override string VersionsPlatformKey => "apple_mobile";
     public override string MakeRemoteFileName(string configVersion, string lastVersion)
     {
         string version = configVersion ?? lastVersion;
