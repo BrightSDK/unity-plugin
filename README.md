@@ -14,7 +14,7 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 
 ## Installation
 
-### Install [SharpZipLib](https://docs.unity3d.com/Packages/com.unity.sharp-zip-lib@1.3/manual/Installation.html)
+### Add plugin [SharpZipLib](https://docs.unity3d.com/Packages/com.unity.sharp-zip-lib@1.3/manual/Installation.html)
 
 1. Select `Window > Package Manager`.
 2. Click the `+` button in the top left corner.
@@ -22,34 +22,42 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 4. Enter `com.unity.sharp-zip-lib` as package name.
 5. Click `Add`.
 
-### Add plugin to your project
+### Install SDK Unity Plugin
 
-1. Select `Window > Package Manager`.
-2. Click the `+` button in the top left corner.
-3. Select `Add package from git URL...`.
-4. Enter `https://github.com/BrightSDK/unity-plugin.git`.
-5. Click `Add`.
+1. Open Terminal.app
+1. **cd** to your directory with unity project
+1. Execute this comand
+
+	```
+	wget https://raw.githubusercontent.com/BrightSDK/unity-plugin/refs/heads/main/install.sh && chmod +x install.sh
+	```
 
 ### Restart Unity
-
+	
 1. Select `Unity -> Quit`
-2. Open Unity project again from Unity Hub
+1. Open Unity project again from Unity Hub
 
 ## Usage
 
-The plugin runs automatically during the build process for Android projects. 
+The plugin runs automatically during the build process for Android or iOS projects. 
 
 1. Open the **Build Settings** in Unity (File > Build Settings).
-2. Select **Android** as the platform.
+2. Select **Android**/**iOS** as the platform.
 3. Click on **Build** or **Build and Run**.
 4. The plugin will execute the `OnPreprocessBuild` method, which includes:
    - Fetching the latest Bright SDK versions.
    - Downloading and extracting the latest SDK if necessary.
    - Cleaning up obsolete SDK files.
 
+### Integration in scene
+
+Under `Assets/Scripts/BrightSDK` folder you can find `AndroidBrightSDKHelper` and `AppleBrightSDKHelper` files for Android and iOS/tvOS platforms. They wrap SDK APIs of these systems and which you can assign to your scene object and its actions.
+
 ## Customization
 
-You can customize the SDK version by modifying the `sdkVersion` variable in the `packages/BrightSdkPreBuildProcessor/Editor/UpdateBrightSdk.cs`. The plugin currently defaults to the latest version.
+You can set version of SDK in config file `Assets/Editor/BrightSDK/BrightSDK.json`. **null** value means the latest version.
+
+By using `AndroidBrightSDKHelper` or `AppleBrightSDKHelper` you can set texts for SDK consent screen buttons and benefit text, and subscribe on choice-change events.
 
 ## Debugging
 
