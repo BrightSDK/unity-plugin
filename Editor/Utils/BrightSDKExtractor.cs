@@ -101,14 +101,16 @@ class AndroidBrightSDKExtractor : BrightSDKExtractor
     }
 }
 
+// --- Apple platforms ---
+
 class AppleBrightSDKExtractor : BrightSDKExtractor
 {
     private string relativeSdkPath;
     private string sdkDir;
 
-    public AppleBrightSDKExtractor()
+    public AppleBrightSDKExtractor(string _relativeSdkPath)
     {
-        relativeSdkPath = "Apple/BrightDataSDK";
+        relativeSdkPath = _relativeSdkPath;//"Apple/BrightDataSDK";
         sdkDir = BrightSDKDirectory.PluginsDir(relativeSdkPath);
     }
 
@@ -116,6 +118,19 @@ class AppleBrightSDKExtractor : BrightSDKExtractor
     {
         RemoveObsoleteFiles();
         ExtractBrightSdk(sourceFile);
+    }
+
+    public virtual string ConstructSourcePath(string extractDir)
+    {
+        throw new NotImplementedException();
+    }
+
+    public virtual void DidUnzipToTempDir(string srcDir)
+    {
+    }
+
+    public virtual void DidCopyFilesToDestination(string destDir)
+    {
     }
 
     private void RemoveObsoleteFiles()
@@ -147,24 +162,49 @@ class AppleBrightSDKExtractor : BrightSDKExtractor
         if (Directory.Exists(destDir))
             Directory.Delete(destDir, true);
 
+        string srcDir = ConstructSourcePath(extractDir);
+        DidUnzipToTempDir(srcDir);
+
+        BrightSDKDirectory.CopyDirectory(srcDir, destDir, true);
+        DidCopyFilesToDestination(destDir);
+
+        AssetDatabase.Refresh();
+        Debug.Log("AppleBrightSDKExtractor: Bright SDK files copied");
+    }
+}
+
+class AppleMobileBrightSDKExtractor: AppleBrightSDKExtractor
+{
+    public AppleMobileBrightSDKExtractor() : base("Apple/BrightDataSDK")
+    {
+    }
+
+    public override string ConstructSourcePath(string extractDir)
+    {
         string srcDir = Path.Combine(extractDir, "unity_plugin/BrightDataSDK");
         if (!Directory.Exists(srcDir))
             srcDir = Path.Combine(extractDir, "unity_editor_sample_app/Assets/BrightDataSDK");
+        return srcDir;
+    }
+
+    public override void DidUnzipToTempDir(string srcDir)
+    {
         string asmDefFile = Path.Combine(srcDir, "AppleBrightSDK.asmdef");
         if (File.Exists(asmDefFile))
             File.Delete(asmDefFile);
         asmDefFile = Path.Combine(srcDir, "AppleBrightSDK.asmdef.meta");
         if (File.Exists(asmDefFile))
             File.Delete(asmDefFile);
-        BrightSDKDirectory.CopyDirectory(srcDir, destDir, true);
+    }
+
+    public override void DidCopyFilesToDestination(string destDir)
+    {
         setSettingsOfFramework(destDir);
-        AssetDatabase.Refresh();
-        Debug.Log("AppleBrightSDKExtractor: Bright SDK files copied");
     }
 
     private void setSettingsOfFramework(string frameworkRoot)
     {
-        Debug.Log("AppleBrightSDKExtractor: Set settings for framework");
+        Debug.Log("AppleMobileBrightSDKExtractor: Set settings for framework");
         string frameworkPath = Path.Combine(frameworkRoot, "brdsdk.framework");
         PluginImporter plugin = AssetImporter.GetAtPath(frameworkPath) as PluginImporter;
         if (plugin == null)

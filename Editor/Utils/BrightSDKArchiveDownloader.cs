@@ -8,7 +8,6 @@ class BrightSDKArchiveDownloader
 {
     private const string sdkUrl = "https://cdn.bright-sdk.com/static/";
 
-    // null for latest
     public virtual string VersionsPlatformKey => null;
 
     public string Download(string lastVersion)
@@ -68,7 +67,6 @@ class BrightSDKArchiveDownloader
 
 class AndroidSDKArchiveDownloader : BrightSDKArchiveDownloader
 {
-    // null for latest
     public override string VersionsPlatformKey => "android";
     public override string MakeRemoteFileName(string configVersion, string lastVersion)
     {
@@ -79,7 +77,6 @@ class AndroidSDKArchiveDownloader : BrightSDKArchiveDownloader
 
 class AppleMobileSDKArchiveDownloader : BrightSDKArchiveDownloader
 {
-    // null for latest
     public override string VersionsPlatformKey => "apple_mobile";
     public override string MakeRemoteFileName(string configVersion, string lastVersion)
     {
