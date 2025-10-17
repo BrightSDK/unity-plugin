@@ -122,7 +122,7 @@ class AppleBrightSDKExtractor : BrightSDKExtractor
 
     public virtual string ConstructSourcePath(string extractDir)
     {
-        throw new NotImplementedException();
+        return extractDir;
     }
 
     public virtual void DidUnzipToTempDir(string srcDir)
@@ -214,6 +214,35 @@ class AppleMobileBrightSDKExtractor: AppleBrightSDKExtractor
         plugin.SetCompatibleWithPlatform(BuildTarget.iOS, true);
         plugin.SetCompatibleWithPlatform(BuildTarget.tvOS, false);
         plugin.SetCompatibleWithPlatform(BuildTarget.Android, false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.StandaloneOSX, false);
+        plugin.SaveAndReimport();
+    }
+}
+
+class AppleDesktopBrightSDKExtractor: AppleBrightSDKExtractor
+{
+    public AppleDesktopBrightSDKExtractor() : base("Apple/BrightDataSDK-macOS")
+    {
+    }
+
+    public override void DidCopyFilesToDestination(string destDir)
+    {
+        setSettingsOfFramework(destDir);
+    }
+
+    private void setSettingsOfFramework(string frameworkRoot)
+    {
+        Debug.Log("AppleDesktopBrightSDKExtractor: Set settings for framework");
+        string frameworkPath = Path.Combine(frameworkRoot, "brdsdk.framework");
+        PluginImporter plugin = AssetImporter.GetAtPath(frameworkPath) as PluginImporter;
+        if (plugin == null)
+            return;
+        plugin.SetCompatibleWithAnyPlatform(false);
+        plugin.SetCompatibleWithEditor(false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.iOS, false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.tvOS, false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.Android, false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.StandaloneOSX, true);
         plugin.SaveAndReimport();
     }
 }

@@ -8,6 +8,7 @@ public class BrightSDKConfig
     {
         public string android;
         public string appleMobile;
+        public string appleDesktop;
 
         public string this[string key]
         {
@@ -17,6 +18,7 @@ public class BrightSDKConfig
                 {
                     case "android": return android;
                     case "apple_mobile": return appleMobile;
+                    case "apple_desktop": return appleDesktop;
                     default: return null;
                 }
             }

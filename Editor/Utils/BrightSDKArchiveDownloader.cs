@@ -6,7 +6,7 @@ using UnityEditor;
 
 class BrightSDKArchiveDownloader
 {
-    private const string sdkUrl = "https://cdn.bright-sdk.com/static/";
+    public virtual string sdkUrl => "https://cdn.bright-sdk.com/static/";
 
     public virtual string VersionsPlatformKey => null;
 
@@ -20,6 +20,7 @@ class BrightSDKArchiveDownloader
             return null;
         }
         string downloadURL = sdkUrl + remoteName;
+        Debug.Log($"==>> Download archive {downloadURL}");
         string targetFile = Path.Combine(BrightSDKDirectory.CacheDir, remoteName);
         downloadFile(downloadURL, targetFile);
         return targetFile;
@@ -29,7 +30,7 @@ class BrightSDKArchiveDownloader
     {
         return null;
     }
-
+  
     private void downloadFile(string url, string targetFile)
     {
         if (!File.Exists(targetFile))
@@ -82,5 +83,16 @@ class AppleMobileSDKArchiveDownloader : BrightSDKArchiveDownloader
     {
         string version = configVersion ?? lastVersion;
         return "bright_sdk_ios-" + version + ".zip";
+    }
+}
+
+class AppleDesktopSDKArchiveDownloader : BrightSDKArchiveDownloader
+{
+    public override string sdkUrl => "http://fs.brightdata.com/autotest/app_macr_mac/20251017/171110/image/";
+    public override string VersionsPlatformKey => "apple_desktop";
+    public override string MakeRemoteFileName(string configVersion, string lastVersion)
+    {
+        string version = configVersion ?? lastVersion;
+        return "bright_sdk_macos_unity-" + version + ".zip";
     }
 }
