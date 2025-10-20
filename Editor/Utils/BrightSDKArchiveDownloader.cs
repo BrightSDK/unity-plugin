@@ -90,7 +90,6 @@ class AppleMobileSDKArchiveDownloader : BrightSDKArchiveDownloader
 
 class AppleDesktopSDKArchiveDownloader : BrightSDKArchiveDownloader
 {
-    public override string sdkUrl => "http://fs.brightdata.com/autotest/app_macr_mac/20251020/123523/image/";
     public override string VersionsPlatformKey => "apple_desktop";
     public override string MakeRemoteFileName(string configVersion, string lastVersion)
     {

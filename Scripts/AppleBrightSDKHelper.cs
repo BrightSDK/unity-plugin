@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using AOT;
 
-#if APPLE_BRIGHT_SDK && (UNITY_IOS || UNITY_TVOS)
+#if APPLE_BRIGHT_SDK && (UNITY_IOS || UNITY_TVOS || UNITY_STANDALONE_OSX)
 using Brdsdk;
 #endif
 public class AppleBrightSDKHelper : BrightSDKHelper
@@ -38,6 +38,49 @@ public class AppleBrightSDKHelper : BrightSDKHelper
         bool enabled = choice == Brdsdk.Choice.Peer;
         if (onStatusChangeCallback != null)
             onStatusChangeCallback.Invoke(enabled);
+    }
+
+#elif APPLE_BRIGHT_SDK && UNITY_STANDALONE_OSX
+    private BrdsdkBridgeMacOS sdkBridge;
+
+    void Awake()
+    {
+        sdkBridge = BrdsdkBridgeMacOS.Create(null, null, null, agreeBtn, disagreeBtn, benefit);
+        if (sdkBridge == null)
+            return;
+        sdkBridge.SetChoiceChangeCallback(choiceChanged);
+    }
+
+    public override void ShowConsent()
+    {
+        if (sdkBridge == null)
+            return;
+        sdkBridge.ShowConsent(true, emptyChoiceChanged);
+    }
+
+    public override void OptOut()
+    {
+        if (sdkBridge == null)
+            return;
+        sdkBridge.OptOut();
+    }
+
+    public override bool IsEnabled()
+    {
+        if (sdkBridge == null)
+            return false;
+        return sdkBridge.CurrentChoice == BrdsdkBridgeMacOS.Choice.Peer;
+    }
+
+    private void choiceChanged(BrdsdkBridgeMacOS.Choice choice)
+    {
+        bool enabled = choice == BrdsdkBridgeMacOS.Choice.Peer;
+        if (onStatusChangeCallback != null)
+            onStatusChangeCallback.Invoke(enabled);
+    }
+
+    private void emptyChoiceChanged(BrdsdkBridgeMacOS.Choice choice)
+    {
     }
 #endif
 }
