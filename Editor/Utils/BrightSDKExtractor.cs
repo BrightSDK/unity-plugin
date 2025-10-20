@@ -225,6 +225,13 @@ class AppleDesktopBrightSDKExtractor: AppleBrightSDKExtractor
     {
     }
 
+    public override void DidUnzipToTempDir(string srcDir)
+    {
+        string editorPath = Path.Combine(srcDir, "Editor");
+        if (Directory.Exists(editorPath))
+            Directory.Delete(editorPath, true);
+    }
+
     public override void DidCopyFilesToDestination(string destDir)
     {
         setSettingsOfFramework(destDir);

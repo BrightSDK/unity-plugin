@@ -20,7 +20,6 @@ class BrightSDKArchiveDownloader
             return null;
         }
         string downloadURL = sdkUrl + remoteName;
-        Debug.Log($"==>> Download archive {downloadURL}");
         string targetFile = Path.Combine(BrightSDKDirectory.CacheDir, remoteName);
         downloadFile(downloadURL, targetFile);
         return targetFile;
@@ -35,10 +34,13 @@ class BrightSDKArchiveDownloader
     {
         if (!File.Exists(targetFile))
         {
+            Debug.Log($"SDKArchiveDownloader: {targetFile} not exists, downloading");
             using (WebClient client = new WebClient())
             {
                 client.DownloadFile(url, targetFile);
             }
+        } else {
+            Debug.Log($"SDKArchiveDownloader: Reusing downloaded file {targetFile}");
         }
     }
 
@@ -88,7 +90,7 @@ class AppleMobileSDKArchiveDownloader : BrightSDKArchiveDownloader
 
 class AppleDesktopSDKArchiveDownloader : BrightSDKArchiveDownloader
 {
-    public override string sdkUrl => "http://fs.brightdata.com/autotest/app_macr_mac/20251017/171110/image/";
+    public override string sdkUrl => "http://fs.brightdata.com/autotest/app_macr_mac/20251020/123523/image/";
     public override string VersionsPlatformKey => "apple_desktop";
     public override string MakeRemoteFileName(string configVersion, string lastVersion)
     {
