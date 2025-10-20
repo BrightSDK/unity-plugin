@@ -2,10 +2,11 @@ using System;
 using System.IO;
 using System.Text;
 using System.Linq;
-using System.IO.Compression;
+using System.Diagnostics;
 using Unity.SharpZipLib.Tar;
 using Unity.SharpZipLib.GZip;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 using UnityEditor;
 
 interface BrightSDKExtractor
@@ -156,7 +157,7 @@ class AppleBrightSDKExtractor : BrightSDKExtractor
             Directory.Delete(extractDir, true);
         Directory.CreateDirectory(extractDir);
 
-        ZipFile.ExtractToDirectory(sourceFile, extractDir);
+        dittoExtractZip(sourceFile, extractDir);
 
         string destDir = sdkDir;
         if (Directory.Exists(destDir))
@@ -165,11 +166,38 @@ class AppleBrightSDKExtractor : BrightSDKExtractor
         string srcDir = ConstructSourcePath(extractDir);
         DidUnzipToTempDir(srcDir);
 
-        BrightSDKDirectory.CopyDirectory(srcDir, destDir, true);
+        dittoCopy(srcDir, destDir);
         DidCopyFilesToDestination(destDir);
 
         AssetDatabase.Refresh();
         Debug.Log("AppleBrightSDKExtractor: Bright SDK files copied");
+    }
+
+    private void dittoCopy(string src, string dst)
+    {
+        if (Directory.Exists(dst))
+            Directory.Delete(dst, true);
+        runBash("/usr/bin/ditto", $"\"{src}\" \"{dst}\"");
+    }
+
+    private void dittoExtractZip(string src, string destinationRootPath)
+    {
+        if (!Directory.Exists(destinationRootPath))
+            Directory.CreateDirectory(destinationRootPath);
+        runBash("/usr/bin/ditto", $"-x -k \"{src}\" \"{destinationRootPath}\"");
+    }
+
+    private void runBash(string file, string args)
+    {
+        Process p = new Process();
+        p.StartInfo.FileName = file;
+        p.StartInfo.Arguments = args;
+        p.StartInfo.UseShellExecute = false;
+        p.StartInfo.RedirectStandardError = true;
+        p.Start();
+        p.WaitForExit();
+        if (p.ExitCode != 0)
+            throw new Exception($"{file} {args}\n{p.StandardError.ReadToEnd()}");
     }
 }
 
