@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate the process of integrating the Bright SDK into your Unity Android projects. This plugin handles downloading, updating, and extracting the Bright SDK, ensuring you have the latest version integrated into your project seamlessly.
+The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate the process of integrating the Bright SDK into your Unity Android or iOS/tvOS projects. This plugin handles downloading, updating, and extracting the Bright SDK, ensuring you have the latest version integrated into your project seamlessly.
 
 ## Features
 
@@ -42,7 +42,7 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 The plugin runs automatically during the build process for Android or iOS projects. 
 
 1. Open the **Build Settings** in Unity (File > Build Settings).
-2. Select **Android**/**iOS** as the platform.
+2. Select **Android**/**iOS**/**tvOS** as the platform.
 3. Click on **Build** or **Build and Run**.
 4. The plugin will execute the `OnPreprocessBuild` method, which includes:
    - Fetching the latest Bright SDK versions.
