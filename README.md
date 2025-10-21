@@ -2,7 +2,13 @@
 
 ## Overview
 
-The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate the process of integrating the Bright SDK into your Unity Android or iOS/tvOS projects. This plugin handles downloading, updating, and extracting the Bright SDK, ensuring you have the latest version integrated into your project seamlessly.
+The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate the process of integrating the Bright SDK into your Unity projects for next platforms
+
+- Android
+- iOS/tvOS (Apple Mobile)
+- macOS (Apple Desktop)
+
+This plugin handles downloading, updating, and extracting the Bright SDK, ensuring you have the latest version integrated into your project seamlessly.
 
 ## Features
 
@@ -42,20 +48,25 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 The plugin runs automatically during the build process for Android or iOS projects. 
 
 1. Open the **Build Settings** in Unity (File > Build Settings).
-2. Select **Android**/**iOS**/**tvOS** as the platform.
+2. Select platform (Android or Apple's one).
 3. Click on **Build** or **Build and Run**.
 4. The plugin will execute the `OnPreprocessBuild` method, which includes:
    - Fetching the latest Bright SDK versions.
    - Downloading and extracting the latest SDK if necessary.
+   - Preparing Xcode project in macOS case.
    - Cleaning up obsolete SDK files.
 
 ### Integration in scene
 
-Under `Assets/Scripts/BrightSDK` folder you can find `AndroidBrightSDKHelper` and `AppleBrightSDKHelper` files for Android and iOS/tvOS platforms. They wrap SDK APIs of these systems and which you can assign to your scene object and its actions.
+Under `Assets/Scripts/BrightSDK` folder you can find `AndroidBrightSDKHelper` and `AppleBrightSDKHelper` files for Android and Apple's platforms. They wrap SDK APIs of these systems and are assignable to your scene object and its actions.
 
 ## Customization
 
-You can set version of SDK in config file `Assets/Editor/BrightSDK/BrightSDK.json`. **null** value means the latest version.
+You can set version of SDK in config file `Assets/Editor/BrightSDK/BrightSDK.json`. **null** value means the latest version. It supports next properties:
+
+- **android** for Android SDK version
+- **appleMobile** for iOS and tvOS
+- **appleDesktop** for macOS
 
 By using `AndroidBrightSDKHelper` or `AppleBrightSDKHelper` you can set texts for SDK consent screen buttons and benefit text, and subscribe on choice-change events.
 
