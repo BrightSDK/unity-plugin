@@ -9,6 +9,7 @@ class SDKVersions
 {
     public string android;
     public string ios;
+    public string macos;
     // Add other fields if necessary
 }
 
@@ -29,6 +30,8 @@ class BrightSDKVersions
     {
         if (platform == BuildTarget.iOS || platform == BuildTarget.tvOS)
             return lastVersions?.ios;
+        else if (platform == BuildTarget.StandaloneOSX)
+            return lastVersions?.macos;
         else if (platform == BuildTarget.Android)
             return lastVersions?.android;
 

@@ -6,9 +6,8 @@ using UnityEditor;
 
 class BrightSDKArchiveDownloader
 {
-    private const string sdkUrl = "https://cdn.bright-sdk.com/static/";
+    public virtual string sdkUrl => "https://cdn.bright-sdk.com/static/";
 
-    // null for latest
     public virtual string VersionsPlatformKey => null;
 
     public string Download(string lastVersion)
@@ -30,15 +29,18 @@ class BrightSDKArchiveDownloader
     {
         return null;
     }
-
+  
     private void downloadFile(string url, string targetFile)
     {
         if (!File.Exists(targetFile))
         {
+            Debug.Log($"SDKArchiveDownloader: {targetFile} not exists, downloading");
             using (WebClient client = new WebClient())
             {
                 client.DownloadFile(url, targetFile);
             }
+        } else {
+            Debug.Log($"SDKArchiveDownloader: Reusing downloaded file {targetFile}");
         }
     }
 
@@ -68,7 +70,6 @@ class BrightSDKArchiveDownloader
 
 class AndroidSDKArchiveDownloader : BrightSDKArchiveDownloader
 {
-    // null for latest
     public override string VersionsPlatformKey => "android";
     public override string MakeRemoteFileName(string configVersion, string lastVersion)
     {
@@ -77,13 +78,22 @@ class AndroidSDKArchiveDownloader : BrightSDKArchiveDownloader
     }
 }
 
-class AppleSDKArchiveDownloader : BrightSDKArchiveDownloader
+class AppleMobileSDKArchiveDownloader : BrightSDKArchiveDownloader
 {
-    // null for latest
-    public override string VersionsPlatformKey => "apple";
+    public override string VersionsPlatformKey => "apple_mobile";
     public override string MakeRemoteFileName(string configVersion, string lastVersion)
     {
         string version = configVersion ?? lastVersion;
         return "bright_sdk_ios-" + version + ".zip";
+    }
+}
+
+class AppleDesktopSDKArchiveDownloader : BrightSDKArchiveDownloader
+{
+    public override string VersionsPlatformKey => "apple_desktop";
+    public override string MakeRemoteFileName(string configVersion, string lastVersion)
+    {
+        string version = configVersion ?? lastVersion;
+        return "bright_sdk_macos_unity-" + version + ".zip";
     }
 }

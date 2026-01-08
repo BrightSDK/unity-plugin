@@ -22,13 +22,17 @@ public class AppleBrightSDKDefiner: AssetPostprocessor
     {
         updateForPlatform(BuildTargetGroup.iOS);
         updateForPlatform(BuildTargetGroup.tvOS);
+        if (macOSFrameworkExists())
+        {
+            updateForPlatform(BuildTargetGroup.Standalone);
+        }
     }
 
     private static void updateForPlatform(BuildTargetGroup group)
     {
         var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
 
-        bool pluginExists = frameworkExists();
+        bool pluginExists = mobileFrameworkExists();
         bool defineExists = defines.Contains(Define);
 
         if (pluginExists && !defineExists)
@@ -43,7 +47,7 @@ public class AppleBrightSDKDefiner: AssetPostprocessor
         }
     }
 
-    private static bool frameworkExists()
+    private static bool mobileFrameworkExists()
     {
         string path = "Assets/Plugins/Apple/BrightDataSDK/brdsdk.xcframework";
         if (Directory.Exists(path))
@@ -51,6 +55,21 @@ public class AppleBrightSDKDefiner: AssetPostprocessor
         path = "Assets/Plugins/Apple/BrightDataSDK/brdsdk.framework";
         if (Directory.Exists(path))
             return true;
+        return false;
+    }
+
+    private static bool macOSFrameworkExists()
+    {
+        string searchName = Path.GetFileNameWithoutExtension("net_updater.zip");
+        string[] guids = AssetDatabase.FindAssets(searchName);
+        foreach (string guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if (Path.GetFileName(path) == "net_updater.zip")
+            {
+                return true;
+            }
+        }
         return false;
     }
 }

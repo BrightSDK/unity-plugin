@@ -7,7 +7,8 @@ public class BrightSDKConfig
     public class Versions
     {
         public string android;
-        public string apple;
+        public string appleMobile;
+        public string appleDesktop;
 
         public string this[string key]
         {
@@ -16,7 +17,8 @@ public class BrightSDKConfig
                 switch (key)
                 {
                     case "android": return android;
-                    case "apple": return apple;
+                    case "apple_mobile": return appleMobile;
+                    case "apple_desktop": return appleDesktop;
                     default: return null;
                 }
             }

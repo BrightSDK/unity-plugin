@@ -17,11 +17,13 @@ public class BrightSDKLoaderPrebuild : IPreprocessBuildWithReport
     {
         sdkVersions = new BrightSDKVersions();
 
-        extractors[BuildTarget.Android] = new AndroidBrightSDKDownloader();
-        extractors[BuildTarget.iOS] = extractors[BuildTarget.tvOS] = new AppleBrightSDKDownloader();
+        extractors[BuildTarget.Android] = new AndroidBrightSDKExtractor();
+        extractors[BuildTarget.iOS] = extractors[BuildTarget.tvOS] = new AppleMobileBrightSDKExtractor();
+        extractors[BuildTarget.StandaloneOSX] = new AppleDesktopBrightSDKExtractor();
 
         archiveDownloaders[BuildTarget.Android] = new AndroidSDKArchiveDownloader();
-        archiveDownloaders[BuildTarget.iOS] = archiveDownloaders[BuildTarget.tvOS] = new AppleSDKArchiveDownloader();
+        archiveDownloaders[BuildTarget.iOS] = archiveDownloaders[BuildTarget.tvOS] = new AppleMobileSDKArchiveDownloader();
+        archiveDownloaders[BuildTarget.StandaloneOSX] = new AppleDesktopSDKArchiveDownloader();
     }
 
     public void OnPreprocessBuild(BuildReport report)

@@ -1,6 +1,7 @@
 {
     "versions": {
         "android": null,
-        "apple": null
+        "appleMobile": null,
+        "appleDesktop": null
     }
 }

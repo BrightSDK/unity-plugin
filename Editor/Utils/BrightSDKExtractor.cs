@@ -2,10 +2,11 @@ using System;
 using System.IO;
 using System.Text;
 using System.Linq;
-using System.IO.Compression;
+using System.Diagnostics;
 using Unity.SharpZipLib.Tar;
 using Unity.SharpZipLib.GZip;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 using UnityEditor;
 
 interface BrightSDKExtractor
@@ -13,11 +14,11 @@ interface BrightSDKExtractor
     public void Extract(string sourceFile);
 }
 
-class AndroidBrightSDKDownloader : BrightSDKExtractor
+class AndroidBrightSDKExtractor : BrightSDKExtractor
 {
     private string sdkDir;
 
-    public AndroidBrightSDKDownloader()
+    public AndroidBrightSDKExtractor()
     {
         sdkDir = BrightSDKDirectory.PluginsDir("Android");
     }
@@ -31,18 +32,18 @@ class AndroidBrightSDKDownloader : BrightSDKExtractor
     private void RemoveObsoleteFiles()
     {
         // Remove obsolete bright_sdk*.aar files
-        Debug.Log("AndroidBrightSDKDownloader: Removing obsolete bright_sdk*.aar files");
+        Debug.Log("AndroidBrightSDKExtractor: Removing obsolete bright_sdk*.aar files");
         string[] obsoleteAarFiles = Directory.GetFiles(sdkDir, "bright_sdk*.aar", SearchOption.TopDirectoryOnly);
         foreach (string file in obsoleteAarFiles)
         {
-            Debug.Log($"AndroidBrightSDKDownloader: Deleting obsolete AAR file {file}");
+            Debug.Log($"AndroidBrightSDKExtractor: Deleting obsolete AAR file {file}");
             File.Delete(file);
         }
     }
 
     private void ExtractBrightSdk(string sourceFile)
     {
-        Debug.Log("AndroidBrightSDKDownloader: Extracting Bright SDK");
+        Debug.Log("AndroidBrightSDKExtractor: Extracting Bright SDK");
         string extractDir = Path.Combine(BrightSDKDirectory.CacheDir, "extracted/Android");
         if (Directory.Exists(extractDir))
             Directory.Delete(extractDir, true);
@@ -61,10 +62,10 @@ class AndroidBrightSDKDownloader : BrightSDKExtractor
         {
             File.Copy(aarFile, destAarFile);
             AssetDatabase.Refresh();
-            Debug.Log($"AndroidBrightSDKDownloader: AAR file found and copied from {aarFile} to {destAarFile}");
+            Debug.Log($"AndroidBrightSDKExtractor: AAR file found and copied from {aarFile} to {destAarFile}");
         }
         else
-            Debug.LogError($"AndroidBrightSDKDownloader: AAR file not found in {extractDir}");
+            Debug.LogError($"AndroidBrightSDKExtractor: AAR file not found in {extractDir}");
     }
 
     private void unzip(string sourceFile, string extractDir)
@@ -101,13 +102,17 @@ class AndroidBrightSDKDownloader : BrightSDKExtractor
     }
 }
 
-class AppleBrightSDKDownloader : BrightSDKExtractor
+// --- Apple platforms ---
+
+class AppleBrightSDKExtractor : BrightSDKExtractor
 {
+    private string relativeSdkPath;
     private string sdkDir;
 
-    public AppleBrightSDKDownloader()
+    public AppleBrightSDKExtractor(string _relativeSdkPath)
     {
-        sdkDir = BrightSDKDirectory.PluginsDir("Apple");
+        relativeSdkPath = _relativeSdkPath;//"Apple/BrightDataSDK";
+        sdkDir = BrightSDKDirectory.PluginsDir(relativeSdkPath);
     }
 
     public void Extract(string sourceFile)
@@ -116,53 +121,118 @@ class AppleBrightSDKDownloader : BrightSDKExtractor
         ExtractBrightSdk(sourceFile);
     }
 
+    public virtual string ConstructSourcePath(string extractDir)
+    {
+        return extractDir;
+    }
+
+    public virtual void DidUnzipToTempDir(string srcDir)
+    {
+    }
+
+    public virtual void DidCopyFilesToDestination(string destDir)
+    {
+    }
+
     private void RemoveObsoleteFiles()
     {
-        Debug.Log("AppleBrightSDKDownloader: Removing obsolete SDK's files");
+        Debug.Log("AppleBrightSDKExtractor: Removing obsolete SDK's files");
         foreach (string file in Directory.GetFiles(sdkDir, "*.*"))
         {
-            Debug.Log($"AppleBrightSDKDownloader: Deleting file {file}");
+            Debug.Log($"AppleBrightSDKExtractor: Deleting file {file}");
             File.Delete(file);
         }
         foreach (string dir in Directory.GetDirectories(sdkDir))
         {
-            Debug.Log($"AppleBrightSDKDownloader: Deleting folder {dir}");
+            Debug.Log($"AppleBrightSDKExtractor: Deleting folder {dir}");
             Directory.Delete(dir, true);
         }
     }
 
     private void ExtractBrightSdk(string sourceFile)
     {
-        Debug.Log("AppleBrightSDKDownloader: Extracting Bright SDK");
-        string extractDir = Path.Combine(BrightSDKDirectory.CacheDir, "extracted/Apple");
+        Debug.Log("AppleBrightSDKExtractor: Extracting Bright SDK");
+        string extractDir = Path.Combine(BrightSDKDirectory.CacheDir, "extracted", relativeSdkPath);
         if (Directory.Exists(extractDir))
             Directory.Delete(extractDir, true);
         Directory.CreateDirectory(extractDir);
 
-        ZipFile.ExtractToDirectory(sourceFile, extractDir);
+        dittoExtractZip(sourceFile, extractDir);
 
-        string destDir = Path.Combine(sdkDir, "BrightDataSDK");
+        string destDir = sdkDir;
         if (Directory.Exists(destDir))
             Directory.Delete(destDir, true);
 
+        string srcDir = ConstructSourcePath(extractDir);
+        DidUnzipToTempDir(srcDir);
+
+        dittoCopy(srcDir, destDir);
+        DidCopyFilesToDestination(destDir);
+
+        AssetDatabase.Refresh();
+        Debug.Log("AppleBrightSDKExtractor: Bright SDK files copied");
+    }
+
+    private void dittoCopy(string src, string dst)
+    {
+        if (Directory.Exists(dst))
+            Directory.Delete(dst, true);
+        runBash("/usr/bin/ditto", $"\"{src}\" \"{dst}\"");
+    }
+
+    private void dittoExtractZip(string src, string destinationRootPath)
+    {
+        if (!Directory.Exists(destinationRootPath))
+            Directory.CreateDirectory(destinationRootPath);
+        runBash("/usr/bin/ditto", $"-x -k \"{src}\" \"{destinationRootPath}\"");
+    }
+
+    private void runBash(string file, string args)
+    {
+        Process p = new Process();
+        p.StartInfo.FileName = file;
+        p.StartInfo.Arguments = args;
+        p.StartInfo.UseShellExecute = false;
+        p.StartInfo.RedirectStandardError = true;
+        p.Start();
+        p.WaitForExit();
+        if (p.ExitCode != 0)
+            throw new Exception($"{file} {args}\n{p.StandardError.ReadToEnd()}");
+    }
+}
+
+class AppleMobileBrightSDKExtractor: AppleBrightSDKExtractor
+{
+    public AppleMobileBrightSDKExtractor() : base("Apple/BrightDataSDK")
+    {
+    }
+
+    public override string ConstructSourcePath(string extractDir)
+    {
         string srcDir = Path.Combine(extractDir, "unity_plugin/BrightDataSDK");
         if (!Directory.Exists(srcDir))
             srcDir = Path.Combine(extractDir, "unity_editor_sample_app/Assets/BrightDataSDK");
+        return srcDir;
+    }
+
+    public override void DidUnzipToTempDir(string srcDir)
+    {
         string asmDefFile = Path.Combine(srcDir, "AppleBrightSDK.asmdef");
         if (File.Exists(asmDefFile))
             File.Delete(asmDefFile);
         asmDefFile = Path.Combine(srcDir, "AppleBrightSDK.asmdef.meta");
         if (File.Exists(asmDefFile))
             File.Delete(asmDefFile);
-        BrightSDKDirectory.CopyDirectory(srcDir, destDir, true);
+    }
+
+    public override void DidCopyFilesToDestination(string destDir)
+    {
         setSettingsOfFramework(destDir);
-        AssetDatabase.Refresh();
-        Debug.Log("AppleBrightSDKDownloader: Bright SDK files copied");
     }
 
     private void setSettingsOfFramework(string frameworkRoot)
     {
-        Debug.Log("AppleBrightSDKDownloader: Set settings for framework");
+        Debug.Log("AppleMobileBrightSDKExtractor: Set settings for framework");
         string frameworkPath = Path.Combine(frameworkRoot, "brdsdk.framework");
         PluginImporter plugin = AssetImporter.GetAtPath(frameworkPath) as PluginImporter;
         if (plugin == null)
@@ -172,6 +242,42 @@ class AppleBrightSDKDownloader : BrightSDKExtractor
         plugin.SetCompatibleWithPlatform(BuildTarget.iOS, true);
         plugin.SetCompatibleWithPlatform(BuildTarget.tvOS, false);
         plugin.SetCompatibleWithPlatform(BuildTarget.Android, false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.StandaloneOSX, false);
+        plugin.SaveAndReimport();
+    }
+}
+
+class AppleDesktopBrightSDKExtractor: AppleBrightSDKExtractor
+{
+    public AppleDesktopBrightSDKExtractor() : base("Apple/BrightDataSDK-macOS")
+    {
+    }
+
+    public override void DidUnzipToTempDir(string srcDir)
+    {
+        string editorPath = Path.Combine(srcDir, "Editor");
+        if (Directory.Exists(editorPath))
+            Directory.Delete(editorPath, true);
+    }
+
+    public override void DidCopyFilesToDestination(string destDir)
+    {
+        setSettingsOfFramework(destDir);
+    }
+
+    private void setSettingsOfFramework(string frameworkRoot)
+    {
+        Debug.Log("AppleDesktopBrightSDKExtractor: Set settings for framework");
+        string frameworkPath = Path.Combine(frameworkRoot, "brdsdk.framework");
+        PluginImporter plugin = AssetImporter.GetAtPath(frameworkPath) as PluginImporter;
+        if (plugin == null)
+            return;
+        plugin.SetCompatibleWithAnyPlatform(false);
+        plugin.SetCompatibleWithEditor(false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.iOS, false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.tvOS, false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.Android, false);
+        plugin.SetCompatibleWithPlatform(BuildTarget.StandaloneOSX, true);
         plugin.SaveAndReimport();
     }
 }
