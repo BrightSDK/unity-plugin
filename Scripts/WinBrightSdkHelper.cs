@@ -5,6 +5,7 @@ using Brdsdk;
 
 public class WinBrightSDKHelper : BrightSDKHelper
 {
+#if UNITY_STANDALONE_WIN
     void Awake()
     {
         BrdsdkBridgeWin.SetChoiceChangeCallback(choiceChanged);
@@ -42,4 +43,5 @@ public class WinBrightSDKHelper : BrightSDKHelper
             BrdsdkBridgeWin.FixService();
         }
     }
+#endif
 }

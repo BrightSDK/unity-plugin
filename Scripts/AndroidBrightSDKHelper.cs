@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 public class AndroidBrightSDKHelper : BrightSDKHelper
 {
+#if UNITY_ANDROID
     private ChoiceListener choiceListener;
     private AndroidJavaObject brightApi;
     private AndroidJavaObject currentActivity;
@@ -66,6 +67,5 @@ public class AndroidBrightSDKHelper : BrightSDKHelper
             return choice == 1;
         }
     }
-
+#endif
 }
-

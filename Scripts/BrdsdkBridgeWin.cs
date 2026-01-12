@@ -33,6 +33,7 @@ namespace Brdsdk
 
         public static Choice choice {
             get {
+#if UNITY_STANDALONE_WIN
                 if (Environment.Is64BitProcess)
                 {
                     return (Choice)_NativeImportsWin64.brd_sdk_get_consent_choice_c();
@@ -41,11 +42,15 @@ namespace Brdsdk
                 {
                     return (Choice)_NativeImportsWin32.brd_sdk_get_consent_choice_c();
                 }
+#else
+                return Choice.None;
+#endif
             }
         }
 
         public static void Init(bool skipConsent)
         {
+#if UNITY_STANDALONE_WIN
             if (Environment.Is64BitProcess)
             {
                 _NativeImportsWin64.brd_sdk_set_skip_consent_on_init_c(skipConsent);
@@ -60,10 +65,12 @@ namespace Brdsdk
                 _NativeImportsWin32.brd_sdk_set_service_status_change_cb_c(sdkStatusChangeCallback);
                 _NativeImportsWin32.brd_sdk_init_c();
             }
+#endif
         }
 
         public static void ShowConsent() 
         {
+#if UNITY_STANDALONE_WIN
             if (Environment.Is64BitProcess)
             {
                 _NativeImportsWin64.brd_sdk_show_consent_c();
@@ -72,10 +79,12 @@ namespace Brdsdk
             {
                 _NativeImportsWin32.brd_sdk_show_consent_c();
             }
+#endif
         }
 
         public static void OptOut()
         {
+#if UNITY_STANDALONE_WIN
             if (Environment.Is64BitProcess)
             {
                 _NativeImportsWin64.brd_sdk_opt_out_c();
@@ -84,10 +93,12 @@ namespace Brdsdk
             {
                 _NativeImportsWin32.brd_sdk_opt_out_c();
             }
+#endif
         }
 
         public static void FixService()
         {
+#if UNITY_STANDALONE_WIN
             if (Environment.Is64BitProcess)
             {
                 _NativeImportsWin64.brd_sdk_fix_service_status_c();
@@ -96,10 +107,12 @@ namespace Brdsdk
             {
                 _NativeImportsWin32.brd_sdk_fix_service_status_c();
             }
+#endif
         }
 
         public static void Deinit()
         {
+#if UNITY_STANDALONE_WIN
             if (Environment.Is64BitProcess)
             {
                 _NativeImportsWin64.brd_sdk_close_c();
@@ -108,6 +121,7 @@ namespace Brdsdk
             {
                 _NativeImportsWin32.brd_sdk_close_c();
             }
+#endif
         }
 
         public static void SetChoiceChangeCallback(BrdsdkBridgeWin.ChoiceChangeCallback callback)
