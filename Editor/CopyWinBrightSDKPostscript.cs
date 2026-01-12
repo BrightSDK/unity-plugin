@@ -17,24 +17,30 @@ public class CopyWinBrightSDKPostscript: IPostprocessBuildWithReport
 
     public void OnPostprocessBuild(BuildReport report)
     {
-        BuildTarget platform = report.summary.platform;
-        string archString;
+        string[] archs = getSupportedTargets(report.summary.platform);
+        string _joined = string.Join(", ", archs);
+
+        Debug.Log($"CopyWinBrightSDKPostscript: Started for [{_joined}]");
+        foreach (string archString in archs)
+        {
+            Debug.Log($"CopyWinBrightSDKPostscript: Started copying for arch {archString}");
+            string sdkDestinationDirectoryPath = findOutputSdkDll(archString, report);
+            sdkDestinationDirectoryPath = Path.GetDirectoryName(sdkDestinationDirectoryPath);
+            copyFilesToDestination(sdkDestinationDirectoryPath, archString);
+            Debug.Log($"CopyWinBrightSDKPostscript: Finished copying for arch {archString}");
+        }
+        Debug.Log($"CopyWinBrightSDKPostscript: Finished for [{_joined}]");
+    }
+
+    private string[] getSupportedTargets(BuildTarget platform)
+    {
         switch (platform)
         {
         case BuildTarget.StandaloneWindows:
-            archString = "32";
-            break;
         case BuildTarget.StandaloneWindows64:
-            archString = "64";
-            break;
-        default: return;
+            return new string[] {"32", "64"};
+        default: return new string[] {};
         }
-
-        Debug.Log($"CopyWinBrightSDKPostscript: Started for {archString}");
-        string sdkDestinationDirectoryPath = findOutputSdkDll(archString, report);
-        sdkDestinationDirectoryPath = Path.GetDirectoryName(sdkDestinationDirectoryPath);
-        copyFilesToDestination(sdkDestinationDirectoryPath, archString);
-        Debug.Log($"CopyWinBrightSDKPostscript: Finished for {archString}");
     }
 
     private string findOutputSdkDll(string platform, BuildReport report)
