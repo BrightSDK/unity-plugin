@@ -20,28 +20,35 @@ public class AppleBrightSDKDefiner: AssetPostprocessor
 
     public static void Apply()
     {
-        updateForPlatform(BuildTargetGroup.iOS);
-        updateForPlatform(BuildTargetGroup.tvOS);
-        if (macOSFrameworkExists())
-        {
-            updateForPlatform(BuildTargetGroup.Standalone);
-        }
+        Debug.Log($"AppleBrightSDKDefiner: Started");
+        bool mobileExists = mobileFrameworkExists();
+        Debug.Log($"AppleBrightSDKDefiner: Mobile framework exists {mobileExists}");
+        updateForPlatform(BuildTargetGroup.iOS, mobileExists);
+        updateForPlatform(BuildTargetGroup.tvOS, mobileExists);
+
+        bool macExists = macOSFrameworkExists();
+        Debug.Log($"AppleBrightSDKDefiner: MacOS framework exists {macExists}");
+        updateForPlatform(BuildTargetGroup.Standalone, macExists);
+        Debug.Log($"AppleBrightSDKDefiner: Finished");
     }
 
-    private static void updateForPlatform(BuildTargetGroup group)
+    private static void updateForPlatform(BuildTargetGroup group, bool pluginExists)
     {
+        Debug.Log($"AppleBrightSDKDefiner: Updating for target {group}");
         var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
 
-        bool pluginExists = mobileFrameworkExists();
         bool defineExists = defines.Contains(Define);
+        Debug.Log($"AppleBrightSDKDefiner: Definition for {group} exists {defineExists}");
 
         if (pluginExists && !defineExists)
         {
+            Debug.Log($"AppleBrightSDKDefiner: Setting definition for {group}");
             defines += ";" + Define;
             PlayerSettings.SetScriptingDefineSymbolsForGroup(group, defines);
         }
         else if (!pluginExists && defineExists)
         {
+            Debug.Log($"AppleBrightSDKDefiner: Removing definition for {group}");
             defines = defines.Replace(Define, "").Replace(";;", ";").Trim(';');
             PlayerSettings.SetScriptingDefineSymbolsForGroup(group, defines);
         }
