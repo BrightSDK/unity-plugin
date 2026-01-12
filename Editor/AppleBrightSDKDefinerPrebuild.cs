@@ -49,10 +49,10 @@ public class AppleBrightSDKDefiner: AssetPostprocessor
 
     private static bool mobileFrameworkExists()
     {
-        string path = "Assets/Plugins/Apple/BrightDataSDK/brdsdk.xcframework";
+        string path = "Assets/Plugins/Apple/BrightSDK/brdsdk.xcframework";
         if (Directory.Exists(path))
             return true;
-        path = "Assets/Plugins/Apple/BrightDataSDK/brdsdk.framework";
+        path = "Assets/Plugins/Apple/BrightSDK/brdsdk.framework";
         if (Directory.Exists(path))
             return true;
         return false;

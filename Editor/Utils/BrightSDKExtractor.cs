@@ -206,7 +206,7 @@ class AppleBrightSDKExtractor : BrightSDKExtractor
 
 class AppleMobileBrightSDKExtractor: AppleBrightSDKExtractor
 {
-    public AppleMobileBrightSDKExtractor() : base("Apple/BrightDataSDK")
+    public AppleMobileBrightSDKExtractor() : base("Apple/BrightSDK")
     {
     }
 
@@ -252,7 +252,7 @@ class AppleMobileBrightSDKExtractor: AppleBrightSDKExtractor
 
 class AppleDesktopBrightSDKExtractor: AppleBrightSDKExtractor
 {
-    public AppleDesktopBrightSDKExtractor() : base("Apple/BrightDataSDK-macOS")
+    public AppleDesktopBrightSDKExtractor() : base("Apple/BrightSDK-macOS")
     {
     }
 
