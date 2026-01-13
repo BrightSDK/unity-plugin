@@ -7,6 +7,7 @@ The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate
 - Android
 - iOS/tvOS (Apple Mobile)
 - macOS (Apple Desktop)
+- Windows
 
 This plugin handles downloading, updating, and extracting the Bright SDK, ensuring you have the latest version integrated into your project seamlessly.
 
@@ -45,20 +46,20 @@ This plugin handles downloading, updating, and extracting the Bright SDK, ensuri
 
 ## Usage
 
-The plugin runs automatically during the build process for Android or iOS projects. 
+The plugin runs automatically during the build process. 
 
 1. Open the **Build Settings** in Unity (File > Build Settings).
-2. Select platform (Android or Apple's one).
+2. Select platform.
 3. Click on **Build** or **Build and Run**.
-4. The plugin will execute the `OnPreprocessBuild` method, which includes:
-   - Fetching the latest Bright SDK versions.
-   - Downloading and extracting the latest SDK if necessary.
-   - Preparing Xcode project in macOS case.
-   - Cleaning up obsolete SDK files.
+
+**Not supported**
+
+- Running in Editor.
+- Building macOS app bundle from Editor (only through Xcode project).
 
 ### Integration in scene
 
-Under `Assets/Scripts/BrightSDK` folder you can find `AndroidBrightSDKHelper` and `AppleBrightSDKHelper` files for Android and Apple's platforms. They wrap SDK APIs of these systems and are assignable to your scene object and its actions.
+Under `Assets/Scripts/BrightSDK` folder you can find `AndroidBrightSDKHelper`, `AppleBrightSDKHelper` and `WinBrightSDKHelper` files which wrap SDK APIs of relative systems and are assignable to your scene object and its actions.
 
 ## Customization
 
@@ -67,8 +68,17 @@ You can set version of SDK in config file `Assets/Editor/BrightSDK/BrightSDK.jso
 - **android** for Android SDK version
 - **appleMobile** for iOS and tvOS
 - **appleDesktop** for macOS
+- **windows** for Windows
 
-By using `AndroidBrightSDKHelper` or `AppleBrightSDKHelper` you can set texts for SDK consent screen buttons and benefit text, and subscribe on choice-change events.
+By using SDK helpers above you can assign texts for SDK consent screen buttons and benefit message, and subscribe on choice-change events.
+
+For Windows SDK you should create a file with name `win_brd_config.json` and fill necessary SDK properties. For the format of content you can check `brd_config.json` from Windows SDK plugin.
+
+Required properties are
+
+- **app_id**
+- **app_name**
+- **logo_link**
 
 ## Debugging
 
