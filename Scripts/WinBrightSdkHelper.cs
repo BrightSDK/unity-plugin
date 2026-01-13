@@ -28,6 +28,11 @@ public class WinBrightSDKHelper : BrightSDKHelper
         BrdsdkBridgeWin.OptOut();
     }
 
+    public void OnApplicationQuit()
+    {
+        BrdsdkBridgeWin.Deinit();
+    }
+
     private void choiceChanged(BrdsdkBridgeWin.Choice choice)
     {
         bool isEnabled = choice == BrdsdkBridgeWin.Choice.Peer;
