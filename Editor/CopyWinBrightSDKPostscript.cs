@@ -17,7 +17,8 @@ public class CopyWinBrightSDKPostscript: IPostprocessBuildWithReport
 
     public void OnPostprocessBuild(BuildReport report)
     {
-        string[] archs = getSupportedTargets(report.summary.platform);
+        bool _isPureBuild = isPureBuild(report);
+        string[] archs = getSupportedTargets(report.summary.platform, _isPureBuild);
         string _joined = string.Join(", ", archs);
 
         Debug.Log($"CopyWinBrightSDKPostscript: Started for [{_joined}]");
@@ -32,14 +33,38 @@ public class CopyWinBrightSDKPostscript: IPostprocessBuildWithReport
         Debug.Log($"CopyWinBrightSDKPostscript: Finished for [{_joined}]");
     }
 
-    private string[] getSupportedTargets(BuildTarget platform)
+    private bool isPureBuild(BuildReport report)
     {
-        switch (platform)
+        foreach (BuildFile file in report.GetFiles()) {
+            var isProject = file.path.EndsWith($"sln", System.StringComparison.OrdinalIgnoreCase)
+            || file.path.EndsWith($"slnx", System.StringComparison.OrdinalIgnoreCase)
+            || file.path.EndsWith($"csproj", System.StringComparison.OrdinalIgnoreCase)
+            || file.path.EndsWith($"vcxproj", System.StringComparison.OrdinalIgnoreCase);
+            if (isProject) return false;
+        }
+        return true;
+    }
+
+    private string[] getSupportedTargets(BuildTarget platform, bool isExeBuild)
+    {
+        if (isExeBuild)
         {
-        case BuildTarget.StandaloneWindows:
-        case BuildTarget.StandaloneWindows64:
-            return new string[] {"32", "64"};
-        default: return new string[] {};
+            switch (platform)
+            {
+            case BuildTarget.StandaloneWindows: return new string[] {"32"};
+            case BuildTarget.StandaloneWindows64: return new string[] {"64"};
+            default: return new string[] {};
+            }
+        }
+        else
+        {
+            switch (platform)
+            {
+            case BuildTarget.StandaloneWindows:
+            case BuildTarget.StandaloneWindows64:
+                return new string[] {"32", "64"};
+            default: return new string[] {};
+            }
         }
     }
 
