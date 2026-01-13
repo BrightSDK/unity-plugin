@@ -42,8 +42,7 @@ public class AndroidBrightSDKHelper : BrightSDKHelper
 
     private void OnStatusChange(bool isEnabled)
     {
-        if (onStatusChangeCallback != null)
-            onStatusChangeCallback.Invoke(isEnabled);
+        NotifyChoiceChangeListeners(isEnabled);
     }
 
     private class ChoiceListener : AndroidJavaProxy

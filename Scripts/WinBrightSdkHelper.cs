@@ -30,9 +30,8 @@ public class WinBrightSDKHelper : BrightSDKHelper
 
     private void choiceChanged(BrdsdkBridgeWin.Choice choice)
     {
-        bool enabled = choice == BrdsdkBridgeWin.Choice.Peer;
-        if (onStatusChangeCallback != null)
-            onStatusChangeCallback.Invoke(enabled);
+        bool isEnabled = choice == BrdsdkBridgeWin.Choice.Peer;
+        NotifyChoiceChangeListeners(isEnabled);
     }
 
     private void statusChanged(BrdsdkBridgeWin.ServiceStatus status)
