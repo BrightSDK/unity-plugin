@@ -1,5 +1,19 @@
 # Bright SDK Unity Plugin
 
+## ⚠️ Breaking change in v1.1.0 — API key now required
+
+Starting with **v1.1.0** the plugin authenticates with the BrightSDK releases API.
+**Older versions will stop working once the unauthenticated endpoint is retired.**
+
+**What you need to do:**
+
+1. Upgrade to the latest plugin version (v1.1.0+)
+2. Obtain a BrightSDK API key — see [How to obtain an API key](docs/obtain-api-key.md)
+3. Export the key before triggering a Unity build:
+   ```bash
+   export SDK_API_KEY=<your-api-key>
+   ```
+
 ## Overview
 
 The **Bright SDK Unity Plugin** is a Unity Editor extension designed to automate the process of integrating the Bright SDK into your Unity projects for next platforms
