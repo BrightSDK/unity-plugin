@@ -39,6 +39,16 @@ This plugin handles downloading, updating, and extracting the Bright SDK, ensuri
 	wget https://raw.githubusercontent.com/BrightSDK/unity-plugin/refs/heads/main/install.sh && chmod +x install.sh
 	```
 
+### Set your API key
+
+The plugin authenticates with the BrightSDK releases API using an API key read from the `SDK_API_KEY` environment variable. Export it before triggering a build:
+
+```bash
+export SDK_API_KEY=my-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+For how to obtain a key, see [docs/obtain-api-key.md](docs/obtain-api-key.md).
+
 ### Restart Unity
 	
 1. Select `Unity -> Quit`
@@ -88,6 +98,7 @@ The plugin provides debug logs in the Unity Console, allowing you to track the p
 
 - Unity 2022.3 or later (other versions can also be supported, but were not tested, feel free to report)
 - Android Build Support installed in Unity
+- `SDK_API_KEY` environment variable set to your BrightSDK API key (see [obtain-api-key.md](docs/obtain-api-key.md))
 
 ## License
 
