@@ -45,13 +45,29 @@ This plugin handles downloading, updating, and extracting the Bright SDK, ensuri
 
 ### Install SDK Unity Plugin
 
-1. Open Terminal.app
-1. **cd** to your directory with unity project
-1. Execute this comand
+#### macOS / Linux
 
-	```
-	wget https://raw.githubusercontent.com/BrightSDK/unity-plugin/refs/heads/main/install.sh && chmod +x install.sh
-	```
+1. Open Terminal.app
+2. `cd` to your Unity project directory
+3. Run:
+
+   ```bash
+   wget https://raw.githubusercontent.com/BrightSDK/unity-plugin/refs/heads/main/install_dependencies.sh -O install_dependencies.sh && chmod +x install_dependencies.sh && ./install_dependencies.sh && rm install_dependencies.sh
+   wget https://raw.githubusercontent.com/BrightSDK/unity-plugin/refs/heads/main/install.sh -O install.sh && chmod +x install.sh && ./install.sh && rm install.sh
+   ```
+
+#### Windows (PowerShell)
+
+1. Open PowerShell
+2. `cd` to your Unity project directory
+3. Run:
+
+   ```powershell
+   Invoke-WebRequest https://raw.githubusercontent.com/BrightSDK/unity-plugin/refs/heads/main/install_dependencies.ps1 -OutFile install_dependencies.ps1; .\install_dependencies.ps1; Remove-Item install_dependencies.ps1
+   Invoke-WebRequest https://raw.githubusercontent.com/BrightSDK/unity-plugin/refs/heads/main/install.ps1 -OutFile install.ps1; .\install.ps1; Remove-Item install.ps1
+   ```
+
+   > If you see an execution policy error, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` first.
 
 ### Set your API key
 
