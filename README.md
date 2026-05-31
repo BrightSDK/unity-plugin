@@ -2,13 +2,18 @@
 
 ## ⚠️ Breaking change in v1.1.0 — API key now required
 
-Starting with **v1.1.0** the plugin authenticates with the BrightSDK releases API.
+Starting with **v1.1.0** the plugin uses
+[bright-sdk-downloader-rs](https://github.com/BrightSDK/bright-sdk-downloader-rs)
+(a native shared library) to resolve versions, download, and extract the SDK.
+The native library is auto-downloaded on first build.
+
 **Older versions will stop working once the unauthenticated endpoint is retired.**
 
 **What you need to do:**
 
 1. Upgrade to the latest plugin version (v1.1.0+)
 2. Obtain a BrightSDK API key — see [How to obtain an API key](docs/obtain-api-key.md)
+   or the [full guide](https://brightsdk.github.io/bright-sdk-downloader-rs/obtain-api-key.html)
 3. Export the key before triggering a Unity build:
    ```bash
    export SDK_API_KEY=<your-api-key>
@@ -77,7 +82,8 @@ The plugin authenticates with the BrightSDK releases API using an API key read f
 export SDK_API_KEY=my-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-For how to obtain a key, see [docs/obtain-api-key.md](docs/obtain-api-key.md).
+For how to obtain a key, see [docs/obtain-api-key.md](docs/obtain-api-key.md)
+or the [full guide from downloader-rs](https://brightsdk.github.io/bright-sdk-downloader-rs/obtain-api-key.html).
 
 ### Restart Unity
 	

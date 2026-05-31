@@ -48,9 +48,28 @@ public class BrightSDKLoaderPrebuild : IPreprocessBuildWithReport
         return archiveDownloaders.ContainsKey(platform) && extractors.ContainsKey(platform);
     }
 
+    private static readonly Dictionary<BuildTarget, string> ffiPlatformKeys =
+        new Dictionary<BuildTarget, string>
+    {
+        { BuildTarget.Android, "android" },
+        { BuildTarget.iOS, "ios" },
+        { BuildTarget.tvOS, "ios" },
+        { BuildTarget.StandaloneOSX, "macos" },
+        { BuildTarget.StandaloneWindows, "win" },
+        { BuildTarget.StandaloneWindows64, "win" },
+    };
+
     private void UpdateBrightSdk(BuildTarget platform)
     {
         Debug.Log($"BrightSDKLoaderPrebuild: Starting Bright SDK update for platform {platform}");
+
+        if (TryUpdateViaFFI(platform))
+        {
+            Debug.Log("BrightSDKLoaderPrebuild: Bright SDK updated via downloader-rs");
+            return;
+        }
+
+        Debug.Log("BrightSDKLoaderPrebuild: FFI path unavailable, falling back to HTTP");
         sdkVersions.load();
 
         if (isPlatformSupported(platform) && sdkVersions.LastVersion(platform) != null)
@@ -62,5 +81,43 @@ public class BrightSDKLoaderPrebuild : IPreprocessBuildWithReport
         }
 
         Debug.Log("BrightSDKLoaderPrebuild: Bright SDK updated successfully");
+    }
+
+    private bool TryUpdateViaFFI(BuildTarget platform)
+    {
+        if (!ffiPlatformKeys.ContainsKey(platform)) return false;
+        string platformKey = ffiPlatformKeys[platform];
+        try
+        {
+            BrightSdkDownloaderFFI.EnsureLoaded();
+            string outputDir = BrightSDKDirectory.CacheDir;
+            string result = BrightSdkDownloaderFFI.Fetch(platformKey, "latest", outputDir);
+            if (result == null)
+            {
+                string err = BrightSdkDownloaderFFI.LastError();
+                Debug.LogWarning($"BrightSDKLoaderPrebuild: FFI sdk_fetch returned null: {err}");
+                return false;
+            }
+            Debug.Log($"BrightSDKLoaderPrebuild: FFI fetch result: {result}");
+            // sdk_fetch downloads and extracts — the extractor still handles
+            // placing files into the correct Unity directories
+            string archivePath = extractFetchedArchivePath(result);
+            if (archivePath != null && extractors.ContainsKey(platform))
+                extractors[platform].Extract(archivePath);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"BrightSDKLoaderPrebuild: FFI failed: {e.Message}");
+            return false;
+        }
+    }
+
+    private string extractFetchedArchivePath(string json)
+    {
+        // Parse "output" field from the JSON response
+        var match = System.Text.RegularExpressions.Regex.Match(json,
+            "\"output\"\\s*:\\s*\"([^\"]+)\"");
+        return match.Success ? match.Groups[1].Value : null;
     }
 }

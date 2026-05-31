@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0] - 2025-07-14
+### Changed
+- Use bright-sdk-downloader-rs native library (P/Invoke) for version resolution and SDK fetch.
+- Native library is auto-downloaded from GitHub Releases on first build.
+- Falls back to HTTP integration config API when FFI is unavailable.
+### Added
+- `BrightSdkDownloaderFFI.cs` — P/Invoke bridge with auto-download of platform-specific native lib.
+- Link to full API key guide from downloader-rs docs.
+
 ## [1.0.0] - 2024-09-18
 ### Added
 - Initial release of the Bright SDK PreBuild Processor.

@@ -17,8 +17,13 @@ class BrightSDKVersions
     public void load()
     {
         Debug.Log("BrightSDKVersions: Fetching Bright SDK versions");
-        string json = getIntegrationConfigContent();
-        lastVersions = parseVersions(json);
+        lastVersions = loadViaFFI();
+        if (lastVersions == null)
+        {
+            Debug.Log("BrightSDKVersions: FFI unavailable, falling back to HTTP");
+            string json = getIntegrationConfigContent();
+            lastVersions = parseVersions(json);
+        }
         Debug.Log($"BrightSDKVersions: Loaded SDK versions: android={lastVersions.GetValueOrDefault("android")}, ios={lastVersions.GetValueOrDefault("ios")}, macos={lastVersions.GetValueOrDefault("macos")}, win={lastVersions.GetValueOrDefault("win")}");
     }
 
@@ -35,6 +40,44 @@ class BrightSDKVersions
             return lastVersions.GetValueOrDefault("win");
 
         return null;
+    }
+
+    private Dictionary<string, string> loadViaFFI()
+    {
+        try
+        {
+            BrightSdkDownloaderFFI.EnsureLoaded();
+            var result = new Dictionary<string, string>();
+            foreach (var kv in new[] {
+                new[] { "android", "android" },
+                new[] { "ios", "ios" },
+                new[] { "macos", "macos" },
+                new[] { "win", "win" }
+            })
+            {
+                string json = BrightSdkDownloaderFFI.Resolve(kv[1], "latest");
+                if (json == null) continue;
+                string ver = extractJsonField(json, "version");
+                if (!string.IsNullOrEmpty(ver))
+                    result[kv[0]] = ver;
+            }
+            if (result.Count > 0)
+            {
+                Debug.Log("BrightSDKVersions: Resolved versions via downloader-rs FFI");
+                return result;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"BrightSDKVersions: FFI load failed: {e.Message}");
+        }
+        return null;
+    }
+
+    private static string extractJsonField(string json, string field)
+    {
+        var match = Regex.Match(json, "\"" + field + "\"\\s*:\\s*\"([^\"]+)\"");
+        return match.Success ? match.Groups[1].Value : null;
     }
 
     private string getIntegrationConfigContent()
