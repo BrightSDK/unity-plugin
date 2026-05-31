@@ -1,5 +1,12 @@
 # Bright SDK Unity Plugin
 
+[![Release](https://img.shields.io/github/v/release/BrightSDK/unity-plugin?color=3ECF8E)](https://github.com/BrightSDK/unity-plugin/releases/latest)
+[![Unity](https://img.shields.io/badge/Unity-2019.4%2B-000?logo=unity&logoColor=white)](https://unity.com)
+[![Powered by downloader-rs](https://img.shields.io/badge/powered%20by-downloader--rs-3ECF8E)](https://github.com/BrightSDK/bright-sdk-downloader-rs)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
+
+📖 **[Documentation & GitHub Pages](https://brightsdk.github.io/unity-plugin/)**
+
 ## ⚠️ Breaking change in v1.1.0 — API key now required
 
 Starting with **v1.1.0** the plugin uses
