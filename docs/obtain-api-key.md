@@ -3,6 +3,8 @@
 The Bright SDK Unity Plugin requires a BrightSDK API key to authenticate with the SDK releases API.
 Set the key as the `SDK_API_KEY` environment variable before triggering a Unity build.
 
+> **Quick link:** [bright-sdk.com → API keys](https://bright-sdk.com/cp/settings/company_profile#api_keys)
+
 ## Steps
 
 ### Step 1 — Open Company Profile
@@ -43,6 +45,24 @@ Add it to `~/.zshrc` or `~/.bashrc` to persist across sessions.
 
 ```powershell
 $env:SDK_API_KEY = "my-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+```
+
+To persist for your user (survives reboots):
+
+```powershell
+[Environment]::SetEnvironmentVariable("SDK_API_KEY", "my-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "User")
+```
+
+**Windows (CMD)**
+
+```cmd
+set SDK_API_KEY=my-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+To persist for your user (survives reboots):
+
+```cmd
+setx SDK_API_KEY "my-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 **CI / GitHub Actions** — store as a repository secret and reference it in your workflow:

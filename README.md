@@ -21,6 +21,7 @@ The native library is auto-downloaded on first build.
 1. Upgrade to the latest plugin version (v1.1.0+)
 2. Obtain a BrightSDK API key — see [How to obtain an API key](docs/obtain-api-key.md)
    or the [full guide](https://brightsdk.github.io/bright-sdk-downloader-rs/obtain-api-key.html)
+   - Direct link: [bright-sdk.com → API keys](https://bright-sdk.com/cp/settings/company_profile#api_keys)
 3. Export the key before triggering a Unity build:
    ```bash
    export SDK_API_KEY=<your-api-key>
