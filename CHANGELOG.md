@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.2] - 2026-10-12
+### Fixed
+- Add SHA-256 verification when downloading platform-specific native downloader library.
+- Add SHA-256 verification and cache validation to HTTP archive downloader.
+- Support pre-extracted SDK output from downloader-rs FFI without re-extraction exceptions.
+
 ## [1.1.1] - 2026-10-12
 ### Fixed
 - Prevent directory traversal during Android SDK archive extraction.

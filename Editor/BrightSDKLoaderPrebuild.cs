@@ -3,6 +3,7 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 public class BrightSDKLoaderPrebuild : IPreprocessBuildWithReport
@@ -90,7 +91,7 @@ public class BrightSDKLoaderPrebuild : IPreprocessBuildWithReport
         try
         {
             BrightSdkDownloaderFFI.EnsureLoaded();
-            string outputDir = BrightSDKDirectory.CacheDir;
+            string outputDir = Path.Combine(BrightSDKDirectory.CacheDir, "extracted", platformKey);
             string result = BrightSdkDownloaderFFI.Fetch(platformKey, "latest", outputDir);
             if (result == null)
             {
@@ -99,11 +100,11 @@ public class BrightSDKLoaderPrebuild : IPreprocessBuildWithReport
                 return false;
             }
             Debug.Log($"BrightSDKLoaderPrebuild: FFI fetch result: {result}");
-            // sdk_fetch downloads and extracts — the extractor still handles
-            // placing files into the correct Unity directories
-            string archivePath = extractFetchedArchivePath(result);
-            if (archivePath != null && extractors.ContainsKey(platform))
-                extractors[platform].Extract(archivePath);
+            // sdk_fetch downloads and extracts into outputDir — extractor copies
+            // verified files into the project assets
+            string extractedPath = extractFetchedArchivePath(result);
+            if (extractedPath != null && extractors.ContainsKey(platform))
+                extractors[platform].Extract(extractedPath);
             return true;
         }
         catch (Exception e)

@@ -11,10 +11,18 @@ using UnityEngine;
 static class BrightSdkDownloaderFFI
 {
     private const string LibName = "bright_sdk_download";
-    private const string DownloaderVersion = "1.0.0";
+    private const string DownloaderVersion = "1.1.1";
     private const string ReleaseBase =
         "https://github.com/BrightSDK/bright-sdk-downloader-rs/releases/download/"
         + DownloaderVersion + "/";
+
+    private static readonly System.Collections.Generic.Dictionary<string, string> NativeLibChecksums =
+        new System.Collections.Generic.Dictionary<string, string>
+    {
+        { "bright_sdk_download.dll", "40ab8a3606aade4c51048d036c50f238b79af70bb5cee0e9cf5b0f3f59b41ef3" },
+        { "libbright_sdk_download.dylib", "20686eefa6c6048a65c1549f66925ebb73c592b29cab82e6fc729f1b6f8101d8" },
+        { "libbright_sdk_download.so", "5d5c8c01897c85511be87b19e47b53706b2809ae9a664f243f67376bef39acbe" },
+    };
 
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl)]
     private static extern IntPtr sdk_resolve(string platform, string version);
@@ -40,10 +48,22 @@ static class BrightSdkDownloaderFFI
     {
         if (initialized) return;
         string libPath = GetNativeLibPath();
+        string fileName = GetNativeLibFileName();
+        string expectedSha = NativeLibChecksums.ContainsKey(fileName) ? NativeLibChecksums[fileName] : null;
+
+        if (File.Exists(libPath))
+        {
+            if (!string.IsNullOrEmpty(expectedSha) && !VerifyChecksum(libPath, expectedSha))
+            {
+                Debug.LogWarning("BrightSdkDownloaderFFI: Cached native library failed checksum check, redownloading...");
+                try { File.Delete(libPath); } catch {}
+            }
+        }
+
         if (!File.Exists(libPath))
         {
             Debug.Log("BrightSdkDownloaderFFI: Downloading native library...");
-            DownloadNativeLib(libPath);
+            DownloadNativeLib(libPath, expectedSha);
         }
         initialized = true;
     }
@@ -116,7 +136,20 @@ static class BrightSdkDownloaderFFI
 #endif
     }
 
-    private static void DownloadNativeLib(string destPath)
+    private static bool VerifyChecksum(string filePath, string expectedSha)
+    {
+        if (string.IsNullOrEmpty(expectedSha) || !File.Exists(filePath))
+            return false;
+        using (var sha = System.Security.Cryptography.SHA256.Create())
+        using (var stream = File.OpenRead(filePath))
+        {
+            byte[] hash = sha.ComputeHash(stream);
+            string actual = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            return string.Equals(actual, expectedSha.ToLowerInvariant(), StringComparison.Ordinal);
+        }
+    }
+
+    private static void DownloadNativeLib(string destPath, string expectedSha)
     {
         string fileName = GetNativeLibFileName();
         string url = ReleaseBase + fileName;
@@ -127,6 +160,12 @@ static class BrightSdkDownloaderFFI
         using (WebClient client = new WebClient())
         {
             client.DownloadFile(url, destPath);
+        }
+        if (!string.IsNullOrEmpty(expectedSha) && !VerifyChecksum(destPath, expectedSha))
+        {
+            try { File.Delete(destPath); } catch {}
+            throw new System.Security.Cryptography.CryptographicException(
+                $"Checksum mismatch for downloaded native library: {destPath}");
         }
         // Add the cache dir to the native library search path
         string currentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
