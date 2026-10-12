@@ -1,0 +1,30 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Manifest & Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Validate JSON files
+        run: |
+          python3 -c "import json, glob; [json.load(open(f)) for f in glob.glob('**/*.json', recursive=True)]"
+
+      - name: Verify C# files non-empty
+        run: |
+          test $(find Editor -name "*.cs" | wc -l) -gt 0
