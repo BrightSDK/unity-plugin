@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.1] - 2026-10-12
+### Fixed
+- Prevent directory traversal during Android SDK archive extraction.
+- Reject tar entries containing relative traversal, rooted paths, and unsupported entry types.
+
 ## [1.1.0] - 2025-07-14
 ### Changed
 - Use bright-sdk-downloader-rs native library (P/Invoke) for version resolution and SDK fetch.
